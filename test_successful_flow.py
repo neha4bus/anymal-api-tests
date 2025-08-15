@@ -88,7 +88,7 @@ def demonstrate_successful_flow():
     logger.info("=" * 60)
     
     # Configuration
-    SERVER_URL = "raas-ge-ver.prod.anybotics.com"
+    SERVER_URL = "demo-server.com"
     EMAIL = "demo@example.com"
     PASSWORD = "demo-password"
     
