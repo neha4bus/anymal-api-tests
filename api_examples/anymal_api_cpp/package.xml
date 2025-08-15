@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+
+  <name>anymal_api_cpp</name>
+  <version>0.1.7</version>
+  <description>C++ code generated from the ANYmal API protobuf definitions.</description>
+  <author email="ghottiger@anybotics.com">Gabriel Hottiger</author>
+  <maintainer email="hwyss@anybotics.com">Hannes Wyss</maintainer>
+  <maintainer email="apoghosov@anybotics.com">Armen Poghosov</maintainer>
+  <license>Proprietary</license>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+  <build_depend>anymal_api_proto</build_depend>
+  <build_depend condition="$ROS_VERSION == 1">cmake_clang_tools</build_depend>
+  <build_depend>protobuf-compiler-grpc</build_depend>
+  <build_depend>protobuf-dev</build_depend>
+  <build_export_depend>grpc++-dev</build_export_depend>
+  <depend>grpc++</depend>
+  <depend>protobuf</depend>
+  <test_depend condition="$ROS_VERSION == 1">cmake_code_coverage</test_depend>
+  <test_depend condition="$ROS_VERSION == 1">gtest</test_depend>
+  <test_depend condition="$ROS_VERSION == 2">ament_cmake_gtest</test_depend>
+  <export>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+  </export>
+</package>

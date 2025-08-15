@@ -1,0 +1,46 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+import time
+
+from anymal_sdk_example import parse_cli_arguments, ANYmalExampleHandler
+
+
+def main():
+    # Parse command line arguments.
+    args = parse_cli_arguments()
+
+    print("Running control authority example.")
+    anymal_name = input("Name of your ANYmal: ")
+    test_api = ANYmalExampleHandler("anymal-connection-test", anymal_name, args)
+
+    # Keep 'communication_interface' alive, to automatically send heartbeats and keep the control authority until you release it again.
+    test_api.create_communication_interface()
+
+    user_choice = input(
+        "Would you like to?\n"
+        "1. Take and release control\n"
+        "2. Get current control authority owner\n\n"
+        "[1/2]? "
+    )
+
+    if user_choice == "1":
+        if test_api.take_control():
+            try:
+                print("Press Ctrl+C to release control.")
+                while test_api.in_control():
+                    time.sleep(2)
+            except KeyboardInterrupt:
+                test_api.release_control()
+
+    elif user_choice == "2":
+        test_api.get_control_authority_status()
+
+    else:
+        print(f"Invalid choice: {user_choice}. Use 1 or 2.")
+
+    # Clean up the open interfaces, sessions and the client.
+    test_api.close_session()
+
+
+if __name__ == "__main__":
+    main()

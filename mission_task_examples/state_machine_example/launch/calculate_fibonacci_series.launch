@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <!-- Load ROS parameters -->
+  <include file="$(find state_machine_example)/launch/load_ros_parameters.launch"/>
+
+  <!-- Run server to calculate fibonacci series -->
+  <node pkg="actionlib_tutorials" type="fibonacci_server" name="fibonacci_server" output="screen"/>
+
+  <!-- Run ROS node which instantiates a CalculateFibonacciSeries state talking to the server -->
+  <node pkg="state_machine_example" type="calculate_fibonacci_series" name="calculate_fibonacci_series" output="screen"/>
+
+</launch>

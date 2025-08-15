@@ -1,0 +1,8 @@
+<library path="lib/libstate_machine_example_plugins">
+  <class type="state_machine_example::CalculateFibonacciSeries" base_class_type="state_machine::State">
+    <description>Calculate the fibonacci series up to a given order.</description>
+  </class>
+  <class type="state_machine_example::CalculateTwoFibonacciSeriesSequentially" base_class_type="state_machine::State">
+    <description>Calculate the fibonacci series up to a given order twice in sequence.</description>
+  </class>
+</library>

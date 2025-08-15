@@ -1,0 +1,22 @@
+/**
+ * Contains messages that define assets and their properties.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/spatial.proto";
+
+/**
+ * An asset contains information about an object of interest, which exists in the real world.
+ * It stores physical information and expected state of the object of interest, but not any action-specific information (e.g. inspection
+ * parameters).
+ */
+message Asset {
+  string id = 1;               // Unique identifier of this asset.
+  string name = 2;             // Human-readable name of this asset.
+  string description = 3;      // Human-readable description of the asset.
+  Pose pose = 4;               // Pose of the midpoint of the asset.
+  reserved 5;                  // AssetOperationParameters operation_parameters - Obsolete
+  repeated string labels = 6;  // Labels that help categorize assets in to groups.
+}

@@ -1,0 +1,9 @@
+num_steps: 15
+run: 0.2
+rise: 0.133
+width: 1.00
+length_bottom_platform: 1.0
+length_top_platform: 1.1
+frame: "map"
+position: [9.07, 17.5, 0.0]
+orientation: [0.0, 0.0, 0.0]

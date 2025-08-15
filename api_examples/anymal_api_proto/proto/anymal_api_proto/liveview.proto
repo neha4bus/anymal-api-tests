@@ -1,0 +1,139 @@
+/**
+ * Contains definitions to interact with the video streaming.
+ */
+
+syntax = "proto3";
+
+package anymal_api_proto;
+
+/**
+ * The LiveViewService implements WebRTC signaling with an SFU (selective forwarding unit).
+ */
+service LiveViewService {
+  rpc LiveView(stream LiveViewClientMsg) returns (stream LiveViewServerMsg);
+}
+
+/**
+ * Request message of the LiveView RPC, sent from the client to the server.
+ * Note that there is no well-defined order of messages, other than the client sending a first message with the ANYmal name and camera.
+ */
+message LiveViewClientMsg {
+  oneof client_message_oneof {
+    LiveViewRequest request = 1;         // The initial request from the client to the server.
+    LiveViewTracks consumed_tracks = 2;  // The tracks that the client is consuming, sent at any time after the initial request.
+    LiveViewSources available_sources =
+        3;  // The sources that the client can provide, and their current state. Sent at any time after the initial request.
+  }
+}
+
+/**
+ * Response message of the LiveView RPC, sent from the server to the client.
+ */
+message LiveViewServerMsg {
+  enum Status {
+    LVS_OK = 0;
+    LVS_ERROR_UNKNOWN_ANYMAL = 1;
+  };
+  Status status = 1;
+  oneof server_message_oneof {
+    LiveViewSignalingOptions signaling_options =
+        2;  // The signaling options that the client can use to connect to the WebRTC SFU. Sent in response to the client's initial request.
+    LiveViewSources available_sources =
+        3;  // The sources that the server can provide, and their current state. Sent at any time after the signaling options.
+    LiveViewTracks consumed_tracks = 4;  // The tracks corresponding to the client's sources that other clients are currently consuming.
+                                         // Sent at any time after the signaling options.
+  }
+}
+
+/**
+ * LiveViewRequest encapsulates the initial request from the client to the server. Essentially we're saying: we want to view live video
+ * streams (and potentially audio streams) from this ANYmal.
+ */
+message LiveViewRequest {
+  string anymal_name = 1;                 // The name of the ANYmal from which we want to consume streams.
+  LiveViewSources available_sources = 2;  // Initial list of available sources that we can provide to other clients.
+}
+
+/**
+ * LiveViewSignalingOptions contains all of the options that the client has to connect to the WebRTC SFU.
+ */
+message LiveViewSignalingOptions {
+  repeated LiveViewSignalingOption option = 1;  // The signaling options that the client can use to connect to the WebRTC SFU.
+}
+
+/**
+ * Details of a single option the client has to connect to the WebRTC SFU.
+ */
+message LiveViewSignalingOption {
+  enum SignalingBand {
+    SB_INBAND = 0;   // In-band signaling - currently not implemented.
+    SB_LIVEKIT = 1;  // LiveKit signaling - the client should use the LiveKit library to connect to the WebRTC SFU.
+  }
+  SignalingBand band = 1;  // Signaling band for which these settings are relevant.
+  oneof signaling_option_oneof {
+    SignalingOptionToken token = 2;  // Information needed to establish a connection to the WebRCT SFU.
+  }
+}
+
+/**
+ * Information needed to establish a connection to the WebRCT SFU.
+ */
+message SignalingOptionToken {
+  string url = 1;    // URL of the WebRTC SFU.
+  string token = 2;  // Authentication token needed to establish a secure connection.
+}
+
+/**
+ * LiveViewSource is a single video or audio source
+ */
+message LiveViewSource {
+  enum SourceType {
+    ST_UNDEFINED = 0;
+    ST_VIDEO = 1;
+    ST_AUDIO = 2;
+  }
+  enum SourceState {
+    SST_UNDEFINED = 0;  // No info about camera state available.
+    SST_ONLINE = 1;     // Source is up and running
+    SST_OFFLINE = 2;    // Source is offline. Sources are generally turned off when the robot is on `sleep` or `dock` operational mode.
+    SST_ERROR = 3;      // The source indicates an error.
+  }
+  SourceType type = 1;     // Source type.
+  string frame_id = 2;     // Camera frame ID.
+  string camera_type = 3;  // Camera type.
+  SourceState state = 4;   // Source state.
+}
+
+/**
+ * LiveViewSources models a list of available video or audio sources. As available_sources this message may be sent by the server at any
+ * time, by a  client as a part of the initial request, or as available_sources at any later stage. When a client receives such a message,
+ * this reflects the total of sources/tracks that are currently available in the current room, together with additional data about the state
+ * of each source. Clients that use out-of-band signaling may directly subscribe to those tracks through the out-of-band means, and they
+ * should Notify the server of the full set of tracks they are currently consuming by sending a LiveViewClientMsg that contains a
+ * consumed_tracks field.
+ */
+message LiveViewSources {
+  repeated LiveViewSource source = 1;
+}
+
+message LiveViewTrack {
+  string frame_id = 1;  // Camera frame ID.
+}
+
+/**
+ * LiveViewTracks models a list of subscribed tracks: the sources_id, and potentially some metadata about preferred resolution, framerate
+ * and encoding.
+ */
+message LiveViewTracks {
+  repeated LiveViewTrack track = 1;
+}
+
+/**
+ * Message to enable a track for a remote livekit server.
+ */
+message LiveViewRemoteTracksSubscription {
+  LiveViewTracks tracks = 1;  // Tracks to be consumed.
+  string url = 2;             // URL of the remote livekit server.
+  string token_lpc = 3;       // Valid access token for the livekit bridge on LPC.
+  string token_npc = 4;       // Valid access token for the livekit bridge on NPC.
+}

@@ -1,0 +1,94 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+import sys
+import time
+
+from anymal_sdk_example import (
+    ANYmalExampleHandler,
+    configure_adhoc_mission,
+    create_predefined_mission,
+    example_adhoc_navigation_mission,
+    parse_cli_arguments,
+)
+
+
+def main():
+    # Parse command line arguments.
+    args = parse_cli_arguments()
+
+    print("Running mission example.")
+    anymal_name = input("Name of your ANYmal: ")
+    test_api = ANYmalExampleHandler("anymal-connection-test", anymal_name, args)
+
+    mission_description = None
+    test_api.create_communication_interface()
+
+    # Get user input.
+    print("Input information about the mission to start.")
+    user_choice = input(
+        "Choose an option\n1. Get the list of predefined missions \n2. Start Pre-defined mission\n3. Start Ad-hoc mission\n4. Example Ad-hoc Navigation mission (Use with caution!) \n[1-4]?\n"
+    )
+    if user_choice == "1":
+        test_api.get_predefined_missions()
+        sys.exit(1)
+    elif user_choice == "2":
+        mission_description = create_predefined_mission()
+    elif user_choice == "3":
+        test_api.create_mission_interface()
+        mission_id = input("Name of your mission: ")
+        mission_description = configure_adhoc_mission(mission_id)
+    elif user_choice == "4":
+        mission_description = example_adhoc_navigation_mission()
+    else:
+        print(f"Invalid choice: {user_choice}. Use 1, 2, 3 or 4.")
+        sys.exit(1)
+
+    # Disengage the protective stop
+    if not test_api.disengage_protective_stop():
+        sys.exit(1)
+
+    # ANYmal will only accept commands from clients, which are in control.
+    if not test_api.take_control():
+        sys.exit(1)
+
+    # Wait a bit after releasing the P-Stop for the robot to get ready to accept mission commands.
+    time.sleep(5)
+    mission_run_id = None
+    try:
+        test_api.register_mission_callbacks()
+        mission_run_id = test_api.start_mission_description(mission_description)
+
+        print("Waiting 90 seconds before pausing the mission.")
+        time.sleep(90)
+        test_api.pause_mission(mission_run_id)
+
+        print("Wait 5 seconds before resuming the mission.")
+        time.sleep(5)
+        test_api.resume_mission(mission_run_id)
+
+        print("Wait for status updates and eventually stop the mission.")
+
+        # Wait until we receive Ctrl+C to terminate.
+        while True:
+            time.sleep(2)
+    except KeyboardInterrupt:
+        # Handle Ctrl+C input.
+        print("Pressed Ctrl+C, shutting down mission interfaces.")
+    except RuntimeError as e:
+        # Handle internal errors.
+        print(f"RuntimeError: {e}")
+    finally:
+        # Stop the mission
+        if mission_run_id:
+            test_api.pause_mission(mission_run_id)
+
+        # We are done with sending commands to the robot.
+        # Release the control to allow other clients to interact with the robot.
+        test_api.release_control()
+        test_api.close_mission_interface()
+        test_api.close_communication_interface()
+        test_api.close_session()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Source of the error state
+ */
+enum ErrorStateType {
+  EST_UNDEFINED = 0;
+  EST_COLLISION_REACTION = 1;  // error state from /collision_reaction_status topic
+  EST_OPERATIONAL_MODE = 2;    // error state from /operational_mode_manager/state_notification
+}
+
+/**
+ * Severity of the error state. Can be used to assign warning colors in GUI.
+ */
+enum ErrorStateSeverity {
+  ESS_UNDEFINED = 0;
+  ESS_WARNING = 1;
+  ESS_ERROR = 2;
+}
+
+/**
+ * Error State message.
+ */
+message ErrorState {
+  Timestamp timestamp = 1;
+  ErrorStateType type = 2;
+  string text = 3;
+  ErrorStateSeverity severity = 4;
+}

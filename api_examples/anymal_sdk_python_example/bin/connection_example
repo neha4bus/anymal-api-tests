@@ -1,0 +1,28 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+import time
+from anymal_sdk_example import parse_cli_arguments, ANYmalExampleHandler
+
+
+def main():
+    # Parse command line arguments.
+    args = parse_cli_arguments()
+
+    print("Running connection example.")
+    anymal_name = input("Name of your ANYmal: ")
+    test_api = ANYmalExampleHandler("anymal-connection-test", anymal_name, args)
+
+    test_api.create_communication_interface()
+    # When we shut down the interface due to a keyboard interrupt, the disconnect handler will get called. In this case, we don't want to
+    # reconnect any more. We use this state to signal the disconnect handler to not reconnect.
+    try:
+        test_api.register_connection_callbacks()
+        while True:
+            time.sleep(2)
+    except KeyboardInterrupt:
+        # Clean up the open interfaces, sessions and the client.
+        test_api.close_communication_interface()
+        test_api.close_session()
+
+
+if __name__ == "__main__":
+    main()

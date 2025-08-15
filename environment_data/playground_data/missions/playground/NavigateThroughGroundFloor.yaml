@@ -1,0 +1,83 @@
+name: NavigateThroughGroundFloor
+settings:
+  - name: initial_state
+    type: InitialState
+    value: Initial Goal
+  - name: outcomes
+    type: Outcomes
+    value:
+      - failure
+      - preemption
+      - success
+  - name: restart_on_execution
+    type: bool
+    value: false
+  - name: states
+    type: States
+    value:
+      - name: Initial Goal
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: Start
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: ToNavigationGoal1
+            transition_to_state: true
+        type: navigation_behavior_plugins::ReactiveNavigation
+      - name: ToNavigationGoal1
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: GroundFloorNavigationGoal4
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: ToNavigationGoal2
+            transition_to_state: true
+        type: navigation_behavior_plugins::ReactiveNavigation
+      - name: ToNavigationGoal2
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: GroundFloorNavigationGoal5
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: ToStart
+            transition_to_state: true
+        type: navigation_behavior_plugins::ReactiveNavigation
+      - name: ToStart
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: Start
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: success
+            transition_to_state: false
+        type: navigation_behavior_plugins::ReactiveNavigation
+type: state_machine::DynamicStateMachine
+

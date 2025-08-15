@@ -1,0 +1,67 @@
+name: NavigateThroughFirstFloor
+settings:
+  - name: initial_state
+    type: InitialState
+    value: NavigateToFirstFloorNavigationGoal1
+  - name: outcomes
+    type: Outcomes
+    value:
+      - failure
+      - preemption
+      - success
+  - name: restart_on_execution
+    type: bool
+    value: false
+  - name: states
+    type: States
+    value:
+      - name: NavigateToFirstFloorNavigationGoal1
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: FirstFloorNavigationGoal1
+        transitions:
+          - outcome: failure
+            transition: NavigateToFirstFloorNavigationGoal2
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: NavigateToFirstFloorNavigationGoal2
+            transition_to_state: true
+        type: navigation_behavior_plugins::ReactiveNavigation
+      - name: NavigateToFirstFloorNavigationGoal2
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: FirstFloorNavigationGoal2
+        transitions:
+          - outcome: failure
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: NavigateToStart
+            transition_to_state: true
+        type: navigation_behavior_plugins::ReactiveNavigation
+      - name: NavigateToStart
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: Start
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: success
+            transition_to_state: false
+        type: navigation_behavior_plugins::ReactiveNavigation
+type: state_machine::DynamicStateMachine
+

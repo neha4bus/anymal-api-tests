@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="fire_extinguisher_2">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="fire_extinguisher_2_link">
+      <visual name="fire_extinguisher_2_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://fire_extinguisher_2/meshes/fire_extinguisher_2.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
+ 

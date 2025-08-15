@@ -1,0 +1,45 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+import time
+
+from anymal_sdk_example import parse_cli_arguments, ANYmalExampleHandler
+
+
+def main():
+    # Parse command line arguments.
+    args = parse_cli_arguments()
+
+    print("Running control command example.")
+    anymal_name = input("Name of your ANYmal: ")
+    test_api = ANYmalExampleHandler("anymal-connection-test", anymal_name, args)
+
+    test_api.create_communication_interface()
+
+    # Get user input.
+    user_choice = input(
+        "Would you like to engage/disengage the P-Stop or Power Cut?\n"
+        "1. Engage (trigger) P-Stop\n"
+        "2. Disengage (release) P-Stop\n"
+        "3. Engage (trigger) Power Cut\n"
+        "4. Disengage (release) Power Cut\n[1-4]? "
+    )
+
+    if user_choice == "1":
+        test_api.engage_protective_stop()
+
+    elif user_choice == "2":
+        test_api.disengage_protective_stop()
+
+    elif user_choice == "3":
+        test_api.engage_power_cut()
+    elif user_choice == "4":
+        test_api.disengage_power_cut()
+    else:
+        print(f"Invalid choice: {user_choice}. Use 1 to 4.")
+
+    time.sleep(2)
+    test_api.close_session()
+
+
+if __name__ == "__main__":
+    main()

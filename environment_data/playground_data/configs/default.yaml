@@ -1,0 +1,34 @@
+environment:
+  default_relative_file_paths:
+    items: environments/environment.yaml
+    waypoints: waypoints/waypoints.json
+  location: Playground
+gazebo:
+  model_paths: [environment_data:///models, package://docking_station_data/models, package://inspection_data/models]
+  world_file: environment_data:///worlds/world.world
+mission_folders:
+  environment: environment_data:///missions
+path_planning_and_following:
+  global_waypoints_manager:
+    waypoints_file_path: environment_data:///waypoints/waypoints.json
+rqt_state_machine_editor:
+  default_path: environment_data:///missions/NewMission.yaml
+rviz_world_loader:
+  model_paths: [environment_data:///models, package://docking_station_data/models, package://inspection_data/models, /usr/share/gazebo-11/models]
+  world_file: environment_data:///worlds/world.world
+slam:
+  mapping:
+    load_map_on_launch_file: environment_data:///slam_maps/map.pb
+slam_map_loader:
+  mapping:
+    load_map_on_launch_file: environment_data:///slam_maps/map.pb
+waypoints_editor:
+  default_path: environment_data:///waypoints/waypoints.json
+spawn_anymal:
+  init_pose:
+    x: 0.0
+    y: 0.0
+    z: 0.8
+    R: 0.0
+    P: 0.0
+    Y: 0.0

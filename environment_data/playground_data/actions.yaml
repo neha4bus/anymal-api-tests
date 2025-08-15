@@ -1,0 +1,15 @@
+actions:
+
+  # Climbing.
+  - action:
+      id: gap_climb_down
+      name: Climb Down Gap
+      file: actions/gap_climb_down.py
+      type: python
+      description: Climb down over gap in playground.
+  - action:
+      id: gap_climb_up
+      name: Climb Up Gap
+      file: actions/gap_climb_up.py
+      type: python
+      description: Climb up over gap in playground.

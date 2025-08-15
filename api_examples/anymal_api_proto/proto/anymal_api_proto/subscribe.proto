@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+import "anymal_api_proto/connection.proto";
+import "anymal_api_proto/control.proto";
+import "anymal_api_proto/inspection.proto";
+import "anymal_api_proto/mission_description.proto";
+import "anymal_api_proto/spatial.proto";
+import "anymal_api_proto/state_estimation.proto";
+import "anymal_api_proto/user_notification.proto";
+import "anymal_api_proto/error_state.proto";
+
+// @exclude API DEV: Extend to introduce new publish-subscribe rpc
+/**
+ * Services to subscribe to streams from the robot.
+ */
+service SubscriptionService {
+  /**
+   * Subscribe to a stream of connection events.
+   */
+  rpc SubscribeConnection(SubscribeConnectionRequest) returns (stream ConnectionEvent);
+  /**
+   * Subscribe to a stream of inspection events.
+   */
+  rpc SubscribeInspection(SubscribeInspectionRequest) returns (stream InspectionEvent);
+  /**
+   * Subscribe to a stream of mission events.
+   */
+  rpc SubscribeMission(SubscribeMissionRequest) returns (stream MissionEvent);
+  /**
+   * Subscribe to a stream of anymal state events.
+   */
+  rpc SubscribeAnymalState(SubscribeAnymalStateRequest) returns (stream AnymalStateEvent);
+  /**
+   * Subscribe to a stream of anymal physical condition events.
+   */
+  rpc SubscribeAnymalPhysicalCondition(SubscribeAnymalPhysicalConditionRequest) returns (stream AnymalPhysicalConditionEvent);
+  /**
+   * Subscribe to a stream of control status.
+   */
+  rpc SubscribeControlStatus(SubscribeControlStatusRequest) returns (stream ControlStatus);
+  /**
+   * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+   * Subscribe to a stream of user notification events.
+   */
+  rpc SubscribeUserNotification(SubscribeUserNotificationRequest) returns (stream UserNotificationEvent);
+}
+
+/**
+ * Request message of the SubscribeConnection RPC.
+ */
+message SubscribeConnectionRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+}
+
+/**
+ * Connection event emitted when ANYmal connects or disconnects from the server.
+ */
+message ConnectionEvent {
+  Timestamp timestamp = 1;         // Timestamp of the event.
+  string anymal_name = 2;          // ANYmal name.
+  ConnectionStatus connected = 3;  // Enum indicating connection status of ANYmal with the server.
+}
+
+// @exclude API DEV: Extend to introduce new publish-subscribe rpc
+/**
+ * Request message of the SubscribeInspection RPC.
+ */
+message SubscribeInspectionRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+
+  // @exclude can be extended in the future with filtering options
+}
+
+/**
+ * Inspection event emitted when an inspection was performed.
+ */
+message InspectionEvent {
+  Timestamp timestamp = 1;  // Timestamp of the event.
+  string asset_id = 2;  // (optional) Unique identifier of the asset. Not present when the inspection event is not linked to a particular
+                        // asset, such as continuous gas monitoring.
+  MissionMetaData metadata = 3;  // Mission metadata to associate/query inspection results. Not all fields are filled when the inspection
+                                 // event was not triggered during execution of a mission, such as gas monitoring while in manual control.
+  InspectionMeasurement measurement = 4;                  // Inspection measurement.
+  repeated InspectionInterpretation interpretations = 5;  // Inspection interpretations.
+  string task_run_uid = 6;                                // Task ID from the mission run to associate with this inspection event.
+  string environment_id = 7;                              // ID of the environment which contains the POI (currently asset)
+}
+
+/**
+ * Request message of the SubscribeMission RPC.
+ */
+message SubscribeMissionRequest {
+  string anymal_name = 1;     // ANYmal name (not used yet).
+  string mission_run_id = 2;  // The UUID of the mission run. Optional.
+}
+
+/**
+ * Mission event emitted while a mission is running.
+ */
+message MissionEvent {
+  Timestamp timestamp = 1;             // Timestamp of the event.
+  MissionMetaData metadata = 2;        // Mission metadata (anymal name, mission_id, mission_run_id).
+  MissionSummary mission_summary = 3;  // Summary of the mission, including past and expected future tasks.
+}
+
+/**
+ * Request message of the SubscribeAnymalState RPC.
+ */
+message SubscribeAnymalStateRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+  reserved 2;              // double subscription_rate - Obsolete, keeping it for backwards compatibility awareness.
+}
+
+/**
+ * Payload state.
+ * Contains one of the payload states.
+ */
+message PayloadState {
+  oneof payload {
+    InspectionPayloadState inspection = 1;  // Inspection payload.
+  }
+}
+
+/**
+ * ANYmal state event, emitted periodically.
+ */
+message AnymalStateEvent {
+  Timestamp timestamp = 1;                        // Timestamp of the event.
+  StateEstimatorState state_estimator_state = 2;  // State of anymal's state estimator.
+  PoseAtTime pose = 3;                            // Pose of the robot in the map frame.
+  repeated JointState joints = 4;                 // Joints states, including possible joints of the payloads.
+  RobotMetaData metadata = 5;                     // Robot metadata.
+  repeated PayloadState payload_states = 6;       // Payload states.
+}
+
+/**
+ * Request message of the SubscribeAnymalPhysicalCondition RPC.
+ */
+message SubscribeAnymalPhysicalConditionRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+}
+
+/**
+ * Event containing the physical condition of ANYmal, emitted periodically.
+ */
+message AnymalPhysicalConditionEvent {
+  Timestamp timestamp = 1;            // Timestamp of the event.
+  RobotMetaData metadata = 2;         // Robot metadata.
+  BatteryState battery_state = 3;     // Battery state.
+  MainBodyState main_body_state = 4;  // Main body state.
+}
+
+/**
+ * Request message of the SubscribeControlStatus RPC.
+ */
+message SubscribeControlStatusRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ * Request message of the SubscribeUserNotification RPC.
+ */
+message SubscribeUserNotificationRequest {
+  string anymal_name = 1;  // ANYmal name, might be extended to a regex.
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ * UserNotificationEvent is the message published by the robot.
+ */
+message UserNotificationEvent {
+  Timestamp timestamp = 1;     // Timestamp of the event.
+  RobotMetaData metadata = 2;  // Robot metadata.
+  oneof event {
+    UserNotification notification = 3;  // Message containing a new user notification
+    UserInteraction interaction = 4;    // Message containing a new user interaction
+    string deactivate_event_id = 5;     // Message sent by the robot to indicate that a previously user event is no longer relevant.
+  }
+}
+
+/**
+ * Messge containing all user notifications currently active on the robot.
+ */
+message ActiveUserNotificationsEvent {
+  Timestamp timestamp = 1;                      // Timestamp of the event.
+  RobotMetaData metadata = 2;                   // Robot metadata.
+  repeated UserNotification notifications = 3;  // List of active user notification
+  repeated UserInteraction interactions = 4;    // List of active user interactions
+}
+
+/**
+ * Error states of the robot.
+ * Currently based on the collision reaction status and operation mode notifications.
+ */
+message ErrorStateEvent {
+  Timestamp timestamp = 1;
+  repeated ErrorState error_states = 2;  // All error states of the robot
+  ErrorState aggregated_error_state =
+      3;  // Error state to display to the user. Error state witht the highest severity or (in case of equal severities) most recent.
+}

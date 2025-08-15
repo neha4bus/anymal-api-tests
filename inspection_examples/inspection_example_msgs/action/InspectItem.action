@@ -1,0 +1,9 @@
+# Goal definition.
+Item item
+---
+# Result definition.
+string message
+---
+# Feedback definition.
+string message
+environment_item_msgs/Progress progress

@@ -1,0 +1,130 @@
+version: "3.9"
+
+# Configure the PPA to use.
+x-ppa-config: &ppa-config
+  # The ANYmal software version. Use the latest release ('release-xx.yy') if no specific version of the software is required. Default is release-22.01.
+  version: ${VERSION:-release-22.01}
+  # The package archive name. Use your organization's PPA if a custom PPA was created for you. Default is 'anymal'.
+  ppa: ${PPA_NAME:-anymal}
+  # The username to access the package archive. Must be provided, no default can be set.
+  username: ${PPA_USERNAME:-""}
+  # The passoword to access the package archive. Must be provided, no default can be set.
+  password: ${PPA_PASSWORD:-""}
+
+# Configure the data source.
+x-generator-config: &generator-config
+  # Rosbag play configuration. Only required if the data-generator is running, the default is regular speed with looping enabled.
+  command: ${ROSBAG_PLAY_OPTIONS:- --rate 1 --loop}
+  # Mount the bag file.
+  volumes:
+    # Rosbag file to play. Only required if the data-generator is running, no default can be set.
+    - ${ROSBAG_FILE_PATH:-./empty.bag}:/share/bagfile.bag
+
+# Optional: Configure the server/client setup.
+x-api-config: &api-config
+  # URL of the server. Default is 'localhost'.
+  SERVER_URL: ${SERVER_URL:-localhost}
+  # Port of the server. Default is '11314'.
+  SERVER_PORT: ${SERVER_PORT:-11314}
+  # Credentials directory for authentication and encryption. Default is '/none', to skip authentication and encryption.
+  CREDENTIALS_DIR: ${CREDENTIALS_DIR:-/none}
+  # Logger level. Options are: debug, info, warn, error, critical. Default is 'debug'.
+  LOG_LEVEL: ${LOG_LEVEL:-debug}
+  # Name of your ANYmal, needs to start with D. Default is 'dtest'.
+  ANYMAL_NAME: ${ANYMAL_NAME:-dtest}
+
+# Helper anchor for building.
+x-build-config: &build-config
+  args: *ppa-config
+  context: .
+
+# Helper anchor for the agent.
+x-agent: &api-agent
+  build:
+    <<: *build-config
+    target: api-agent
+  image: anymal-sdk-example-agent:${VERSION:-release-22.01}
+  network_mode: host
+  profiles:
+    - inspection-demo
+
+# Helper anchor for the client.
+x-client: &api-client
+  build:
+    <<: *build-config
+    target: api-client
+  image: anymal-sdk-example-client:${VERSION:-release-22.01}
+  network_mode: host
+
+# List of services to start, they are using the host network to communicate.
+# The services don't need a startup order as entrypoints/commands wait for the other services to be up.
+services:
+
+  # The ANYmal API connection example client that uses the ANYmal SDK.
+  client-connection:
+    <<: *api-client
+    command: connection_example
+    container_name: anymal-sdk-example-client-connection
+    environment:
+      <<: *api-config
+    profiles:
+      - connection-client
+
+  # The ANYmal API inspection example client that uses the ANYmal SDK.
+  client-inspection:
+    <<: *api-client
+    command: inspection_example
+    container_name: anymal-sdk-example-client-inspection
+    environment:
+      <<: *api-config
+      DISPLAY: ${DISPLAY}
+    profiles:
+      - inspection-client
+      - inspection-demo
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+  # The data generator that simulates data coming from ANYmal.
+  data-generator:
+    <<: *generator-config
+    build:
+      <<: *build-config
+      target: api-data-generator
+    container_name: anymal-sdk-example-data-generator
+    image: anymal-sdk-example-data-generator:${VERSION:-release-22.01}
+    network_mode: host
+    profiles:
+      - inspection-demo
+
+  # The ANYmal API agent service.
+  # TODO(ghottiger) Add npc when needed.
+  lpc-agent:
+    <<: *api-agent
+    container_name: anymal-sdk-example-agent-lpc
+    environment:
+      <<: *api-config
+      ANYMAL_PC: lpc
+
+  # Roscore service.
+  roscore:
+    build:
+      <<: *build-config
+      target: api-roscore
+    container_name: anymal-sdk-example-roscore
+    image: anymal-sdk-example-roscore:${VERSION:-release-22.01}
+    network_mode: host
+    profiles:
+      - inspection-demo
+
+  # The ANYmal API server service.
+  server:
+    build:
+      <<: *build-config
+      target: api-server
+    container_name: anymal-sdk-example-server
+    environment:
+      <<: *api-config
+    image: anymal-sdk-example-server:${VERSION:-release-22.01}
+    network_mode: host
+    profiles:
+      - inspection-demo

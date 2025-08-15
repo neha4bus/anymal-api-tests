@@ -1,0 +1,594 @@
+/**
+ * Contains definitions for interacting the the inspection capabilities of the robot.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+import "anymal_api_proto/spatial.proto";
+import "anymal_api_proto/task.proto";
+
+/**
+ * Type of measurement that was collected during inspection.
+ */
+enum InspectionMeasurementType {
+  IMT_UNDEFINED = 0;                 // Best practice: 0 must be UNDEFINED.
+  IMT_THERMAL = 1;                   // Image from the thermal camera.
+  IMT_VISUAL = 2;                    // Image from the zoom camera.
+  IMT_AUDITIVE = 3;                  // Audio recording from the microphone.
+  IMT_VIDEO = 4;                     // Video recording.
+  IMT_CONCENTRATION = 5;             // Task-triggered concentration sensor measurement.
+  IMT_CONCENTRATION_MONITORING = 6;  // Continuous monitoring concentration sensor measurement.
+  IMT_ACOUSTIC_IMAGE = 7;            // Image from the acoustic camera.
+  IMT_CUSTOM = 101;                  // Custom measurement (e.g. from a customer payload).
+}
+
+/**
+ * Type of interpretation that was applied to the measurement.
+ */
+enum InspectionInterpretationType {
+  IIT_UNDEFINED = 0;                       // Best practice: 0 must be UNDEFINED.
+  IIT_THERMAL_FRAME_CAPTURE = 1;           // Thermal image frame has been captured.
+  IIT_THERMAL_HOTSPOT_DETECTION = 2;       // Thermal hotspots on the image have been detected.
+  IIT_VISUAL_FRAME_CAPTURE = 51;           // Visual image frame has been captured.
+  IIT_VISUAL_READOUT = 52;                 // Value on an asset has been read.
+  IIT_VISUAL_OBJECT_DETECTION = 53;        // Object has been detected.
+  IIT_AUDITIVE_SAMPLE_CAPTURE = 101;       // Audio sample has been captured.
+  IIT_AUDITIVE_FREQUENCY_ANALYSIS = 102;   // Audio frequencies have been analyzed.
+  IIT_ACOUSTIC_IMAGE_FRAME_CAPTURE = 111;  // Acoustic image frame has been captured.
+  IIT_LEAK_DETECTION = 112;                // Leak detection using acoustic imaging has been performed.
+  IIT_PARTIAL_DISCHARGE_DETECTION = 113;   // Partial Discharge detection using acoustic imaging has been performed.
+  IIT_MECHANICAL_INSPECTION = 114;         // Mechanical inspection has been performed.
+  IIT_VIDEO = 151;                         // Video has been recorded.
+  IIT_CUSTOM = 201;                        // Custom interpretation type.
+  IIT_CONCENTRATION = 251;                 // Substance concentration analysis.
+}
+
+/**
+ * Type of the measured temperature.
+ */
+enum MeasureTemperatureType {
+  MTT_MIN = 0;     // Minimum temperature.
+  MTT_MAX = 1;     // Maximum temperature.
+  MTT_SPOT = 2;    // Spot temperature.
+  MTT_MEDIAN = 3;  // Median temperature.
+}
+
+/**
+ * Data of an inspection measurement.
+ */
+message InspectionMeasurement {
+  InspectionMeasurementType type = 1;  // Type of measurement that has been performed.
+  Pose sensor_pose = 2;                // Pose of the sensor that captured the measurement.
+  oneof measurement_oneof {
+    ThermalMeasurement thermal = 3;               // Data of the measurement, only set for thermal measurements.
+    AuditiveMeasurement auditive = 4;             // Data of the measurement, only set for auditive measurements.
+    VisualMeasurement visual = 5;                 // Data of the measurement, only set for visual measurements.
+    VideoMeasurement video = 6;                   // Data of the measurement, only set for video recordings.
+    ConcentrationMeasurement concentration = 7;   // Data of the measurement, only set for concentration measurements.
+    AcousticImageMeasurement acoustic_image = 8;  // Data of the measurement, only set for acoustic imaging measurements.
+  }
+}
+
+/**
+ * Data of an inspection interpretation.
+ */
+message InspectionInterpretation {
+  InspectionInterpretationType type = 1;                                      // Type of the interpretation that has been performed.
+  oneof interpretation_oneof {                                                // Interpretation type.
+    ThermalHotspotInterpretation thermal_hotspot = 2;                         // Interpretation of the thermal measurement.
+    AuditiveSampleCaptureInterpretation auditive_sample_capture = 3;          // Interpretation of the auditive measurement.
+    AuditiveFrequencyAnalysisInterpretation auditive_frequency_analysis = 4;  // Interpretation of the auditive measurement.
+    VisualFrameCaptureInterpretation visual_frame_capture = 5;                // Interpretation of the visual measurement.
+    VisualReadoutInterpretation visual_readout = 6;                           // Interpretation of the visual measurement.
+    VisualObjectDetectionInterpretation visual_object_detection = 7;          // Interpretation of the visual measurement.
+    VideoInterpretation video = 8;                                            // Interpretation of the video recording measurement.
+    ConcentrationInterpretation concentration = 9;                            // Interpretation of the substance concentration measurement.
+    AcousticImageFrameCaptureInterpretation acoustic_image_frame_capture = 10;  // Interpretation of the acoustic image measurement.
+    LeakDetectionInterpretation leak_detection = 11;  // Interpretation of the leak detection acoustic imaging measurement.
+    PartialDischargeDetectionInterpretation partial_discharge_detection =
+        12;  // Interpretation of the partial discharge detection acoustic imaging measurement.
+    MechanicalInspectionInterpretation mechanical_inspection = 13;  // Interpretation of the mechanical inspection measurement.
+  }
+}
+
+/**
+ * Data of a thermal measurement.
+ */
+message ThermalMeasurement {
+  ThermalImage thermal_image = 1;  // Thermal image.
+  Image rgb_image = 2;             // RGB image.
+}
+
+/**
+ * Interpretation of the data of a thermal measurement, by performing hotstop detection.
+ */
+message ThermalHotspotInterpretation {
+  float confidence = 1;                                  // Confidence of the interpretation. Currently set to 1 for all inspections.
+  float min_temperature = 2;                             // Minimum temperature in the image (°C).
+  float max_temperature = 3;                             // Maximum temperature in the image (°C).
+  float spot_temperature = 4;                            // Temperature at the spot (°C).
+  MeasureTemperatureType measured_temperature_type = 5;  // Type of the measure temperature in the mission task.
+  Image colorized_image = 6;                             // Human-readable colorized image of the thermal inspection
+  ResultInterpretation result = 7;                       // The result of the inspection (If its nominal or an anomaly)
+  FloatRange normal_operating_range = 8;  // (Optional) The expected operating range of the matching measured temperature type (°C).
+  float median_temperature = 9;           // Median temperature in the image (°C).
+  int32 roi_diameter = 10;                // Diameter of the region of interest (ROI) in pixels in the center of the image. -1 if not set.
+  float emissivity = 11;                  // Emissivity of the asset [0-1]. -1 if not set.
+  float ambient_temperature = 12;         // Ambient temperature (°C). -300 if not set.
+  float ambient_relative_humidity = 13;   // Ambient relative humidity (%) [0-100]. -1 if not set.
+  float distance_to_asset = 14;           // Distance to the asset (m). -1 if not set.
+  float atmospheric_transmission = 15;    // Atmospheric transmission [0-1]. -1 if not set.
+}
+
+/**
+ * Data of an auditive measurement.
+ */
+message AuditiveMeasurement {
+  AudioData audio = 1;  // Audio.
+}
+
+/**
+ * Interpretation of an auditive measurement.
+ * Empty because there is no interpretation performed on simple audio recordings.
+ */
+message AuditiveSampleCaptureInterpretation {}
+
+/**
+ * Configuration of the auditive frequency analysis at the time the inspection was taken.
+ */
+message AuditiveFrequencyAnalysisConfiguration {
+  repeated float desired_frequencies = 1;  // Desired frequency(ies) to detect. If empty, no target frequency was configured.
+  repeated float filter_frequencies =
+      2;                          // Frequencies to filter out from the SNR analysis. If empty, no filter frequencies were configured.
+  bool frequency_expected = 3;    // True if the frequency(ies) being present indicates a nominal operation, false otherwise.
+  float snr_value_threshold = 4;  // Signal to noise ratio value threshold configured to identify if a predicted frequency is an anomaly.
+  bool use_signal_harmonics = 5;  // True if the desired frequency(ies) harmonics are also used to detect the signal, false otherwise.
+  bool use_filter_harmonics = 6;  // True if the filter frequency(ies) harmonics are also used to filter the signal, false otherwise.
+  bool is_ultrasonic =
+      7;  // True if the analysis is performed on ultrasonic frequencies(going up to 192Khz), false otherwise (up to 22050Hz).
+  uint32 bin_tolerance = 8;  // (Advanced) Number of adjacent frequency bins to include for 1D convolution
+  uint32 harmonics_to_use =
+      9;  // (Advanced) Number of harmonics to use for the desired frequency(ies) and filter frequency(ies). If 0, no harmonics are used.
+  uint32 analysis_window = 10;  // (Advanced) Number of samples to include in the analysis window. Maps time to sample rate, i.e. a value of
+                                // 220500 is equivalent to analyzing over a 5s window
+}
+
+/**
+ * Interpretation of an auditive measurement by performing a frequency analysis.
+ */
+message AuditiveFrequencyAnalysisInterpretation {
+  float confidence = 1;             // Confidence of the interpretation. Currently set to 1 for all inspections.
+  Image power_spectrum = 2;         // Power spectrum of the audio sample, represented in 2 dimensions as an image.
+  float signal_to_noise_ratio = 3;  // Signal to noise ratio of the audio sample.
+  float desired_frequency = 4 [
+    deprecated = true
+  ];  // Desired frequency to detect. If <0, no target frequency was configured. Deprecated in favor of the matching configuration field.
+  bool frequency_detected = 5;                      // True if the desired frequency was detected in the sample, false otherwise.
+  repeated float fft_frequency = 6;                 // The frequencies of the FFT (power spectrum).
+  repeated float fft_power = 7;                     // The power of the FFT (power spectrum).
+  ResultInterpretation result = 8;                  // The result of the inspection (If its nominal or an anomaly)
+  bool frequency_expected = 9 [deprecated = true];  // True if the frequency being present indicates a nominal operation, false otherwise
+  AuditiveFrequencyAnalysisConfiguration configuration = 10;  // Relevant configuration parameters for the auditive frequency analysis.
+}
+
+/**
+ * Data of a visual measurement (i.e. a camera image).
+ */
+message VisualMeasurement {
+  Image image = 1;  // Image.
+}
+
+/**
+ * Interpretation of a visual measurement.
+ * Empty because there is no interpretation performed on simple image recordings.
+ */
+message VisualFrameCaptureInterpretation {}
+
+/**
+ * Interpretation of a visual measurement by performing a readout of an instrument.
+ */
+message VisualReadoutInterpretation {
+  float confidence = 1;       // Confidence of the interpretation that the object was detected [0,1].
+  float estimate = 2;         // Estimate of the value shown by the asset. For levers: closed = 1, open = 0.
+  string estimate_units = 3;  // Units used to represent the estimate. For levers, this contains the open/closed state rather than a unit
+  Image detection_image =
+      4;  // Image highlighting the asset to inspect, upon detection. Present if ResultInterpretation is RI_NORMAL or RI_ANOMALY.
+  string asset_type = 5;                  // Asset type (e.g. gauge, dial, etc)
+  ResultInterpretation result = 6;        // The result of the inspection (If its nominal or an anomaly)
+  float confidence_threshold = 7;         // The confidence threshold configured to mark an asset as detected.
+  FloatRange normal_operating_range = 8;  // (Optional) The expected operating range of the readout. For levers: closed = 1, open = 0.
+  FloatRange measurement_range = 9;       // (Optional) The measuremente range configured for the asset.
+}
+
+/**
+ * Interpretation of a visual measurement by performing object detection.
+ */
+message VisualObjectDetectionInterpretation {
+  float confidence = 1;  // Confidence of the interpretation that the object is present [0,1].
+  Image detection_image =
+      2;  // Image highlighting the asset to inspect, upon detection. Present if ResultInterpretation is RI_NORMAL or RI_ANOMALY.
+  string asset_type = 3;            // Type of the detected asset (e.g. gauge, dial, etc).
+  ResultInterpretation result = 4;  // The result of the inspection (If its nominal or an anomaly)
+  float confidence_threshold = 5;   // The confidence threshold configured to mark the object as present.
+}
+
+/**
+ * Data of a video recording.
+ */
+message VideoMeasurement {
+  Timestamp timestamp = 1;                 // UTC Timestamp at the start of the video.
+  string frame_id = 2;                     // Camera frame ID.
+  string camera_type = 3;                  // Camera type.
+  string digest = 4;                       // File upload digest (Currently the file path as placeholder).
+  uint64 file_size = 5;                    // File size in bytes.
+  uint32 duration = 6;                     // Duration in milliseconds.
+  float frame_rate = 7;                    // Frame rate of the video stream.
+  uint32 width = 8;                        // Width of the video stream in pixels.
+  uint32 height = 9;                       // Height of the video stream in pixels.
+  string file_type = 10;                   // MIME type of the video.
+  AudioVideoParameters video_params = 11;  // Video codec parameters.
+  AudioVideoParameters audio_params = 12;  // Audio codec parameters.
+  /**
+   * Raw video file data as a bytearray. This field contains the bytestream
+   * of the video file. You should write the bytestream into a file with
+   * the appropriate file extension based on the value of the `file_type` field.
+   *
+   * Note:
+   * - This field will only be sent if the video data does not exceed 95%
+   *   of the message size limit, which is typically 16MB.
+   */
+  bytes video_data = 13;
+}
+
+/**
+ * Interpretation of a video recording.
+ * Empty because there is no interpretation performed on simple video recordings.
+ */
+message VideoInterpretation {}
+
+/**
+ * Concentration thresholds.
+ */
+message ConcentrationThresholds {
+  float warning = 1;
+  float alarm = 2;
+}
+
+/**
+ * Properties of the concentration sensor.
+ */
+message ConcentrationSensorProperties {
+  string unit = 1;                   // Unit of the concentration measurement.
+  string substance = 2;              // Substance . Possible values: "CHx" (combustible), "H2", "H2S", "O2" (all toxic) gases, etc.
+  FloatRange measurement_range = 3;  // Measurement concentration range of the substance that the sensor can detect.
+  ConcentrationThresholds low_thresholds = 4;   // Thresholds for low concentration.
+  ConcentrationThresholds high_thresholds = 5;  // Thresholds for high concentration.
+}
+
+/**
+ * Data of a concentration measurement.
+ */
+message ConcentrationMeasurement {
+  MeasurementDynamics value = 1;                        // measurement reported by the sensor.
+  ConcentrationSensorProperties sensor_properties = 2;  // Properties of the concentration sensor being measured.
+}
+
+/**
+ * Interpretation of a concentration measurement to obtain its concentration level and whether its within expected user-defined limits or
+ * not.
+ * Disclaimer: The concentration readings provided by ANYmal gas sensors are purely for informative and non-safety related purposes.
+ * Always equip yourself with the required PPE in a hazardous zone.
+ * Please, perform a gas sensor bump test before each usage to ensure optimal performance
+ */
+message ConcentrationInterpretation {
+  SubstanceConcentrationLevel concentration_level = 1;  // Discrete concentration level of the substance.
+  float confidence = 2;                                 // Confidence of the interpretation [0,1].
+  InterpretationConfidenceLevel confidence_level = 3;   // Discrete confidence level of the interpretation.
+}
+
+/**
+ * Data of an acoustic image measurement.
+ */
+message AcousticImageMeasurement {
+  Image image = 1 [deprecated = true];  // Image.
+  AcousticImage acoustic_image = 2;     // Acoustic image.
+}
+
+/**
+ * Interpretation of an acoustic imaging measurement.
+ * Empty because there is no interpretation performed on acoustic image measurements.
+ */
+message AcousticImageFrameCaptureInterpretation {}
+
+/**
+ * Configuration of the leak detection PoI at the time the inspection was taken.
+ */
+message LeakDetectionConfiguration {
+  float gas_cost = 1;                  // Cost of the gas expected to be leaking, in USD/1000L or USD/cubic foot.
+  float electricity_cost = 2;          // Cost of the compressor's electricity_cost in USD/kWH.
+  float power_ratio = 3;               // Power ratio of the compressor in kW/100L/minute or kW/cubic foot/minute.
+  float operating_hours_per_year = 4;  // Number of hours the compressor is in operation in a year.
+  float snr_value_threshold = 5;  // Signal to noise ratio value threshold configured to identify if a predicted gas leak is an anomaly.
+}
+
+/**
+ * Interpretation of an acoustic imaging measurement, by performing a leak detection.
+ * The video of the detection is stored in the measurement, and the interpretation contains the first image.
+ * The video and images can detect up to 4 leak sources (given they are over the signal threshold).
+ * The metrics obtained and present in this message (SPL, Leak Rate, cost, etc) are for the strongest leak source detected
+ */
+message LeakDetectionInterpretation {
+  float sound_pressure_level_at_sensor_in_db = 1 [deprecated = true];  // The pressure level at the sensor [db].
+  float signal_to_noise_ratio_in_db = 2 [deprecated = true];           // Signal to noise ratio of the measurement [db].
+  float leakq_scale_at_source = 3
+      [deprecated = true];  // LeakQ scale at the source to indicate the size of the gas leak (1-10, where 10 is a large leak).
+  float leakq_threshold = 4 [deprecated = true];  // LeakQ scale threshold configured for the inspection to be marked as an anomaly (1-10).
+  Image thumbnail_image = 5 [deprecated = true];  // First image from the video.
+  ResultInterpretation result = 6;                // The result of the inspection (If its nominal or an anomaly)
+  LeakDetectionConfiguration configuration = 7;   // Relevant configuration parameters of the leak detection.
+  float distance_to_source = 8;                   // Estimated distance to the source of the leak in [m]
+  float sound_pressure_level_at_source = 9;       // Sound pressure level at the source of the leak in [db]
+  float snr_value = 10;                           // Signal to noise ratio value of the gas leak. Used to identify real gas leaks.
+  float cost = 11;                                // Cost of the gas leak in [cost_unit] per year
+  string cost_unit = 12;                          // Unit of the cost of the gas leak
+  float electricity_usage = 13;                   // Electricity usage of the compressor in [electricity_usage_unit]
+  string electricity_usage_unit = 14;             // Unit of the electricity usage of the compressor
+  float leak_rate = 15;                           // Leak rate in [leak_rate_unit]
+  string leak_rate_unit = 16;                     // Unit of the leak rate
+  AcousticImage thumbnail_acoustic_image = 17;    // First image from the video.
+}
+
+/**
+ * Configuration of the partial discharge detection PoI at the time the inspection was taken.
+ */
+message PartialDischargeDetectionConfiguration {
+  string operating_conditions = 1;  // Operating condition of the asset: DC / AC50Hz / AC60Hz.
+  float snr_value_threshold =
+      2;  // Signal to noise ratio value threshold configured to identify if a predicted partial discharge is an anomaly.
+}
+
+/**
+ * Interpretation of an acoustic imaging measurement, by performing a partial discharge detection.
+ * The video of the detection is stored in the measurement, and the interpretation contains the first image.
+ * The metrics obtained and present in this message (SPL, distance, etc) are for the strongest partial discharge source detected
+ */
+message PartialDischargeDetectionInterpretation {
+  float sound_pressure_level_at_sensor_in_db = 1 [deprecated = true];  // Sound Pressure Level at sensor (dB).
+  float discharge_pulses_per_minute = 2 [deprecated = true];           // The number of partial discharge pulses per minute detected.
+  float discharge_pulses_threshold = 3 [deprecated = true];  // Partial Discharge threshold for detecting an anomaly (User-defined).
+  Image thumbnail_image = 4 [deprecated = true];             // First image from the video.
+  ResultInterpretation result = 5;                           // The result of the inspection (If its nominal or an anomaly)
+  PartialDischargeDetectionConfiguration configuration = 6;  // Relevant configuration parameters of the partial discharge detection.
+  float distance_to_source = 7;                              // Estimated distance to the source of the partial discharge in [m]
+  float sound_pressure_level_at_source = 8;                  // Sound pressure level at the source of the partial discharge in [db]
+  float snr_value = 9;  // Signal to noise ratio value of the partial discharge. Used to identify real partial discharges.
+  float external_probability =
+      10;  // Probability of the PD being an external (corona) partial discharge. Ignore if no PD over the threshold is detected.
+  float internal_probability =
+      11;  // Probability of the PD being an internal (void) partial discharge.  Ignore if no PD over the threshold is detected.
+  float surface_tracking_probability =
+      12;  // Probability of the PD being a surface tracking partial discharge.  Ignore if no PD over the threshold is detected.
+  AcousticImage thumbnail_acoustic_image = 13;  // First image from the video.
+}
+
+/**
+ * Configuration of the mechanical inspection PoI at the time the inspection was taken.
+ */
+message MechanicalInspectionConfiguration {
+  float snr_value_threshold = 2;  // Signal to noise ratio value threshold configured to identify if the signal is present or not.
+}
+
+/**
+ * Mechanical inspection interpretation.
+ * The analysis is performed by doing a frequency analysis of the audio sample for the given frequency range
+ * The SNR can indicate if the asset is nominal or not.
+ */
+message MechanicalInspectionInterpretation {
+  ResultInterpretation result = 1;                      // The result of the inspection (If its nominal or an anomaly)
+  MechanicalInspectionConfiguration configuration = 2;  // Relevant configuration parameters of the mechanical inspection.
+  float distance_to_source = 3;                         // Estimated distance to the source of the mechanical inspection in [m]
+  float sound_pressure_level_at_source = 4;             // Sound pressure level at the source of the mechanical inspection in [db]
+  float snr_value =
+      5;  // Signal to noise ratio value of the mechanical inspection. Used to whether the frequency and its harmonics are present.
+  AcousticImage thumbnail_acoustic_image = 6;     // First image from the video.
+  float sound_pressure_level_at_sensor = 7;       // Sound Pressure Level at sensor (dB).
+  float sound_pressure_level_beamformed_min = 8;  // Minimum sound pressure level of the beamformed audio (dB).
+  float sound_pressure_level_beamformed_max = 9;  // Maximum sound pressure level of the beamformed audio (dB).
+}
+
+/**
+ * Service to control inspection payload (zoom level, led intensity, pan/tilt position, etc.).
+ */
+service InspectionPayloadService {
+  /**
+   * Control inspection payload.
+   * The User Interaction Mode must be set to "MANUAL", and the client must own the control authority
+   * to control the inspection payload.
+   */
+  rpc ControlInspectionPayload(InspectionPayloadRequest) returns (InspectionPayloadResponse);
+
+  /**
+   * Calibrate the gas sensor.
+
+   * Disclaimer: The concentration readings provided by ANYmal gas sensors are purely for informative and non-safety related purposes.
+   * Always equip yourself with the required PPE in a hazardous zone.
+   * Please, perform a gas sensor bump test before each usage to ensure optimal performance
+   *
+   * The User Interaction Mode must be set to "MANUAL", the client must own the control authority,
+   * the robot must also be sufficiently charged, in the rest position and with P-stop engaged to calibrate the gas sensor.
+   * The calibration process is a multi-step process. The client must follow the steps in the correct order:
+   * 1. Send a request with GCP_START to start the calibration procedure.
+   * 2. Send a request with GCP_ZERO_CALIBRATION to perform the zero calibration (Set the zero-concentration value).
+   * 3. Send a request with GCP_SPAN_CALIBRATION to perform the span calibration (Set the span-concentration value).
+   *
+   * Please ensure that you follow the instructions in the response's calibration_instructions field.
+   * Additionally, this API call SHOULD ONLY be called when performing the calibration physically on the robot.
+   *
+   */
+  rpc CalibrateGasSensor(GasCalibrationRequest) returns (GasCalibrationResponse);
+}
+
+/**
+ * Request message of the ControlInspectionPayload RPC.
+ */
+message InspectionPayloadRequest {
+  string anymal_name = 1;                                                      // Name of the ANYmal to control.
+  oneof payload_request_oneof {                                                // Mutually exclusive payload requests.
+    float led_intensity = 2;                                                   // Set the intensity of the LED [0-1].
+    float zoom_level = 3;                                                      // Set the zoom level of the camera [0-1].
+    PanTiltPosition pan_tilt_position = 4;                                     // Set the pan/tilt position of the payload.
+    ZoomRectangle zoom_rectangle = 5;                                          // Zoom to a rectangle in the visual image.
+    AcousticImagingStreamFrequencies acoustic_imaging_stream_frequencies = 6;  // Set the frequency band of the acoustic imaging streaming.
+    AcousticImagingSensitivityLevel acoustic_imaging_stream_sensitivity = 7;   // Set the sensitivity of the acoustic imaging stream.
+  }
+}
+
+/**
+ * Response message of the ControlInspectionPayload RPC.
+ */
+message InspectionPayloadResponse {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string message = 2;            // Human-readable error message if the request was not successful.
+}
+
+/**
+ * Pan/tilt angles of the inspection payload.
+ */
+message PanTiltPosition {
+  float pan = 1;   // Pan angle in radians.
+  float tilt = 2;  // Tilt angle in radians.
+}
+
+/**
+ * Rectangle in the visual image to zoom to.
+ */
+message ZoomRectangle {
+  Rectangle rectangle = 1;  // Rectangle to zoom to.
+  Size2d image_size = 2;    // Size of the image that was used for the rectangle.
+}
+
+/**
+ * State of the LED light.
+ */
+message LightState {
+  float intensity = 1;  // Intensity of the light [0-1].
+}
+
+/**
+ * State of the zoom camera.
+ */
+message ZoomCameraState {
+  float zoom_level = 1;  // Zoom level of the camera [0-1].
+}
+
+/**
+ * State of a single, actuated joint of the inspection payload.
+ */
+message ActuationState {
+  float position = 1;  // Joint position in radians.
+}
+
+/**
+ * State of both pan and tilt joints of the inspection payload.
+ */
+message PanTiltState {
+  ActuationState pan = 1;   // Pan state.
+  ActuationState tilt = 2;  // Tilt state.
+}
+
+/**
+ * State of the inspection payload.
+ * Note: Pan/tilt joint states are also contained in the "joint" field in AnymalStateEvent.
+ */
+message InspectionPayloadState {
+  LightState light = 1;             // State of the light.
+  ZoomCameraState zoom_camera = 2;  // State of the zoom camera.
+  PanTiltState pan_tilt = 3;        // State of the pan/tilt.
+}
+
+/**
+ * Frequency band of the acoustic imaging streaming.
+ */
+message AcousticImagingStreamFrequencies {
+  float min = 1;
+  float max = 2;
+}
+
+/**
+ * Sensitivity levels of the acoustic imaging stream.
+ */
+enum AcousticImagingSensitivityLevel {
+  AISL_UNDEFINED = 0;  // Best practice: 0 must be UNDEFINED.
+  AISL_LOW = 1;        // Low sensitivity.
+  AISL_MEDIUM = 2;     // Medium sensitivity.
+  AISL_HIGH = 3;       // High sensitivity.
+  AISL_UNSET = 4;      // No sensitivity level set.
+}
+
+/**
+ * Process step of the gas sensor calibration.
+ */
+enum GasCalibrationProcess {
+  GCP_UNDEFINED = 0;         // Best practice: 0 must be UNDEFINED.
+  GCP_START = 1;             // Start the calibration procedure.
+  GCP_ZERO_CALIBRATION = 2;  // Perform the zero calibration (Set the zero-concentration value).
+  GCP_SPAN_CALIBRATION = 3;  // Perform the span calibration (Set the ).
+}
+
+/**
+ * Process step of the gas sensor calibration.
+ */
+enum GasCalibrationType {
+  GCT_UNDEFINED = 0;  // Best practice: 0 must be UNDEFINED.
+  GCT_HONEYWELL = 1;  // The gas sensor is a honeywell sensor, and the calibration is mechanical.
+  GCT_NET = 2;        // The gas sensor is a NET sensor, and the calibration is digital.
+}
+
+/**
+ * Status code for gas calibration operations.
+ */
+enum GasCalibrationStatus {
+  GCS_UNDEFINED = 0;                            // Best practice: 0 must be UNDEFINED.
+  GCS_OK = 1;                                   // Gas calibration process step was succesful.
+  GCS_ERROR_UNKNOWN = 2;                        // Unknown error.
+  GCS_ERROR_MISSING_CONTROL = 3;                // Missing control authority.
+  GCS_ERROR_INVALID_USER_INTERACTION_MODE = 4;  // Invalid UIM.
+  GCS_ERROR_TIMEOUT = 5;                        // Timeout.
+  GCS_SENSOR_NOT_WARMED_UP = 6;                 // Gas sensor is not warmed up yet.
+  GCS_BATTERY_LOW = 7;                          // Battery is not charged enough (>50%) to last the calibration procedure.
+  GCS_ROBOT_NOT_IN_REST = 8;                    // Robot is not in rest mode.
+  GCS_P_STOP_DISENGAGED = 9;                    // Robot P-stop is not engaged.
+  GCS_ZERO_NOT_CALIBRATED = 10;                 // Zero calibration has not yet been done.
+  GCS_INVALID_SENSOR = 11;                      // A wrong sensor number was provided.
+  GCS_INVALID_REFERENCE = 12;                   // A wrong calibration reference value was provided.
+  GCS_SENSOR_NOT_CONFIGURED = 13;               // The gas sensor is not configured.
+}
+
+/*
+ * Request message of the CalibrateGasSensor RPC.
+ * To calibrate send a request with GCS_START, follow the procedure,
+ * then send a request with GCS_ZERO_CALIBRATION, follow the procedure,
+ * and finally send a request with GCS_SPAN_CALIBRATION to confirm it.
+ */
+message GasCalibrationRequest {
+  string anymal_name = 1;                          // Name of the ANYmal to calibrate the gas sensor.
+  GasConcentrationSensorNumber sensor_number = 2;  // Number of the gas sensor to calibrate.
+  GasCalibrationProcess calibration_process = 3;   // Calibration process step to perform.
+  float reference_span_value = 4;  // Reference concentration value given by the user for the calibration of the span of NET sensors. Not
+                                   // used for Honeywell sensors nor to set the zero.
+}
+
+/**
+ * Response message of the CalibrateGasSensor RPC.
+ */
+message GasCalibrationResponse {
+  AnymalServiceResponseHeader header = 1;       // Header with the result status.
+  GasCalibrationStatus calibration_status = 2;  // Status of the gas sensor calibration procedure.
+  string error_message = 3;                     // Human-readable error message if the request was not successful.
+  float settle_wait_time = 4;                   // Recommended time to wait for the gas concentration to settle (in seconds).
+  float recommended_zero_concentration = 5;     // Recommended concentration for the span calibration (in the gas sensor measurement unit)
+  float recommended_span_concentration = 6;     // Recommended concentration for the span calibration (in the gas sensor measurement unit)
+  GasCalibrationType calibration_type = 7;      // Type of the gas sensor calibration
+}

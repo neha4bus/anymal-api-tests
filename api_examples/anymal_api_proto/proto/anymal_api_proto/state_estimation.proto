@@ -1,0 +1,38 @@
+/**
+ * Messages that define state estimation entities.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Represents the status of ANYmal's state estimator.
+ */
+enum StateEstimatorState {
+  STATE_ESTIMATOR_STATE_UNDEFINED = 0;        // ANYmal state estimator state is undefined.
+  STATE_ESTIMATOR_STATE_OK = 1;               // ANYmal state estimator is in a normal state.
+  STATE_ESTIMATOR_STATE_UNINITIALIZED = 2;    // ANYmal state estimator is not initialized.
+  STATE_ESTIMATOR_STATE_ERROR_UNKNOWN = 3;    // ANYmal state estimator has encountered an unknown error.
+  STATE_ESTIMATOR_STATE_ERROR_ESTIMATOR = 4;  // ANYmal state estimator has encountered an error in the estimator.
+  STATE_ESTIMATOR_STATE_ERROR_SENSOR = 5;     // ANYmal state estimator has encountered an error in the sensor.
+
+  /* @exclude
+   * Note that the ERROR states are represented by negative values in the ROS msg equivalent. We changed them to positive values.
+   * This is done because it is recommended to not use negative values in protobuf enums (see link below).
+   * https://developers.google.com/protocol-buffers/docs/proto3#enum:~:text=Since%20enum%20values%20use%20varint%20encoding%20on%20the%20wire%2C%20negative%20values%20are%20inefficient%20and%20thus%20not%20recommended.
+   * STATE_ESTIMATOR_STATE_ERROR_UNKNOWN - ROS Msg equivalent is 0.
+   * STATE_ESTIMATOR_STATE_ERROR_ESTIMATOR - ROS Msg equivalent is -1.
+   * STATE_ESTIMATOR_STATE_ERROR_SENSOR - ROS Msg equivalent is -3.
+   */
+}
+
+/**
+ * State of a single joint of ANYmal's.
+ */
+message JointState {
+  Timestamp timestamp = 1;  // Timestamp of the joint state.
+  string name = 2;          // Name of the joint.
+  double position = 3;      // Position of the joint in radians.
+}

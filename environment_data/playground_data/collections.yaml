@@ -1,0 +1,7 @@
+collections:
+  - collection:
+     id: playground
+     name: Playground
+     actions:
+      - gap_climb_down
+      - gap_climb_up

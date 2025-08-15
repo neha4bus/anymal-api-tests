@@ -1,0 +1,169 @@
+name: InspectMaze
+settings:
+  - name: default_initial_state
+    type: DefaultInitialState
+    value: InspectMazeEntrance
+  - name: outcomes
+    type: Outcomes
+    value:
+      - failure
+      - preemption
+      - success
+  - name: restart_on_execution
+    type: bool
+    value: false
+  - name: states
+    type: States
+    value:
+      - name: InspectMazeEntrance
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeEntrance
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside1
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside1
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeExit
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeExit_II
+        transitions:
+          - outcome: anomaly
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: failure
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: normal
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+        type: inspection_intelligence_behavior_plugins::Inspect
+      - name: InspectMazeInside1
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside1
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside2
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside2
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeInside2
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside2
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside3
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside3
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeInside3
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside3
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside4
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside4
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeInside4
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside4
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside5
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside5
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeInside5
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside5
+        transitions:
+          - outcome: failure
+            transition: InspectMazeInside6
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeInside6
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectMazeInside6
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: MazeInside6
+        transitions:
+          - outcome: failure
+            transition: InspectMazeExit
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: InspectMazeExit
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: NavigateToStart
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: Start
+          - name: path_planning_type
+            type: PathPlanningType
+            value: Along Waypoints
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: success
+            transition_to_state: false
+        type: navigation_behavior_plugins::ReactiveNavigation
+type: state_machine::DynamicStateMachine
+

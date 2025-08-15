@@ -1,0 +1,11 @@
+Source: playground-data
+Section: misc
+Priority: optional
+Maintainer: Remo Diethelm <rdiethelm@anybotics.com>
+Build-Depends: cmake, debhelper (>= 9), debhelper-compat (= 13)
+Standards-Version: 3.9.8
+
+Package: playground-data
+Architecture: all
+Depends: ${misc:Depends}
+Description: Package containing the playground environment data

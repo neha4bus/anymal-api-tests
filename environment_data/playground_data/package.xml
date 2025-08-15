@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<package format="3">
+
+  <name>playground_data</name>
+  <version>0.2.5</version>
+  <description>Application data for ANYmal to operate in a playground simulation environment.</description>
+
+  <author email="lisler@anybotics.com">Linus Isler</author>
+  <maintainer email="lisler@anybotics.com">Linus Isler</maintainer>
+  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
+
+  <license>Proprietary</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+
+  <!-- Note: the package does not depend on included data packages (e.g. inspection_data) for a reason.
+       These packages are already listed as dependency on anymal_*_ui, so that they can be used in every environment.
+       Adding them here would prevent us from catching regressions, e.g. dependency is removed from anymal_*_ui -->
+
+  <export>
+    <environment/>
+    <build_type>cmake</build_type>
+  </export>
+
+</package>

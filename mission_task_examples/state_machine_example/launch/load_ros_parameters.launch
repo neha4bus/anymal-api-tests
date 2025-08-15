@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <arg name="namespace" default="state_machine_example" doc="Namespace to load parameters into."/>
+  <rosparam ns="$(arg namespace)" command="load" file="$(find state_machine_example)/config/ros.yaml"/>
+
+</launch>

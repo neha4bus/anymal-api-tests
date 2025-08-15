@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<package format="2">
+
+  <name>state_machine_example</name>
+  <version>0.1.16</version>
+  <description>Examples to showcase how to use the state machine library and write plugins.</description>
+
+  <license>Proprietary</license>
+  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
+  <maintainer email="escioni@anybotics.com">Enea Scioni</maintainer>
+  <author email="rdiethelm@anybotics.com">Remo Diethelm</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>cmake_clang_tools</build_depend>
+
+  <depend>actionlib_tutorials</depend>
+  <depend>param_io</depend>
+  <depend>roscpp</depend>
+  <depend>state_machine</depend>
+  <depend>state_machine_ros</depend>
+
+  <test_depend>cmake_code_coverage</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+    <state_machine plugin="${prefix}/state_machine_plugin.xml"/>
+  </export>
+
+</package>

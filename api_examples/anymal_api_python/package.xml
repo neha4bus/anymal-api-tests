@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<package format="2">
+
+  <name>anymal_api_python</name>
+  <version>0.1.7</version>
+  <description>Python code generated from the ANYmal API protobuf definitions.</description>
+
+  <license>Proprietary</license>
+
+  <author email="rdiethelm@anybotics.com">Remo Diethelm</author>
+  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
+  <maintainer email="jvelasco@anybotics.com">Javier De Velasco Oriol</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>anymal_api_proto</build_depend>
+  <build_depend>protobuf-dev</build_depend>
+
+  <test_depend>cmake_python_coverage</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+</package>

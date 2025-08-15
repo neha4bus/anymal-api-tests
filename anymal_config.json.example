@@ -1,0 +1,8 @@
+{
+  "server_url": "your-server.com",
+  "email": "your-email@domain.com",
+  "password": "your-password",
+  "verify_ssl": true,
+  "timeout": 30,
+  "output_dir": "./downloads"
+}

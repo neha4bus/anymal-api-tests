@@ -1,0 +1,28 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+from pathlib import Path
+import wave
+
+from anymal_api_proto import AuditiveMeasurement
+from anymal_sdk_example import play_audio
+
+
+def main():
+    # 1. Populate the AudioData.
+    # This would be done from the API itself, but for the sake of this example we populate it directly here.
+    wave_file_handle = wave.open(
+        str(Path(__file__).resolve().parent / "audio_sample.wav")
+    )
+    audio_meas = AuditiveMeasurement()
+    audio_meas.audio.channels = wave_file_handle.getnchannels()
+    audio_meas.audio.depth = wave_file_handle.getsampwidth() * 8
+    audio_meas.audio.sampling_rate = wave_file_handle.getframerate()
+    audio_meas.audio.data = wave_file_handle.readframes(wave_file_handle.getnframes())
+    wave_file_handle.close()
+
+    # 2. Play the Audio Measurement
+    play_audio(audio_meas)
+
+
+if __name__ == "__main__":
+    main()

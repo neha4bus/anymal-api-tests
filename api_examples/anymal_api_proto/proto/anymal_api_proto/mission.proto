@@ -1,0 +1,347 @@
+/**
+ * Contains messages that define mission services.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+import "anymal_api_proto/mission_description.proto";
+
+/**
+ * Services to trigger and interact with missions.
+ */
+service MissionService {
+  /**
+   * Start a Mission.
+   * If the mission consists of only Navigation tasks, use `ControlMission` instead.
+   * Deprecated at 25.06. Obsoleted at 25.12.
+   * The User Interaction Mode must be set to "AUTO", and the client must own the control authority
+   * to start a mission.
+   */
+  rpc StartMission(StartMissionRequest) returns (InteractMissionResponse) { option deprecated = true; };
+
+  /**
+   * DEPRECATED: Use ControlMission instead.
+   * Deprecated at 24.09. Obsoleted at 25.02.
+   *
+   * Pause, Resume, or Stop a Mission.
+   * The User Interaction Mode must be set to "AUTO", and the client must own the control authority
+   * to interact with missions.
+   */
+  // rpc InteractMission(InteractMissionRequest) returns (InteractMissionResponse) { option deprecated = true; };
+
+  /**
+   * Control a mission (start, pause, or resume).
+   * The User Interaction Mode must be set to "AUTO", and the client must own the control authority
+   * to control a mission.
+   */
+  rpc ControlMission(ControlMissionRequest) returns (ControlMissionResponse);
+
+  /**
+   * Get the list of predefined missions of the currently loaded environment.
+   */
+  rpc GetPredefinedMissions(GetPredefinedMissionsRequest) returns (GetPredefinedMissionsResponse);
+
+  /**
+   * Get the details of a mission defined in the current environment.
+   */
+  rpc GetMission(GetMissionRequest) returns (GetMissionResponse);
+
+  /**
+   * Create a new mission and store it to the environment.
+   *
+   * If the mission ID already exists, it will currently be silently overwritten.
+   */
+  rpc CreateMission(CreateMissionRequest) returns (CreateMissionResponse);
+
+  /**
+   * Delete an existing mission from the environment.
+   * This is a non-reversible change that will remove the mission also for other clients.
+   */
+  rpc DeleteMission(DeleteMissionRequest) returns (DeleteMissionResponse);
+
+  /**
+   * Update a mission with an updated mission description.
+   *
+   * Not implemented yet
+   */
+  rpc UpdateMission(UpdateMissionRequest) returns (UpdateMissionResponse);
+}
+
+/**
+ * Request to start a mission.
+ */
+message StartMissionRequest {
+  // Fields 1-5 Deprecated at 25.06. Obsoleted at 25.12. Use mission_description instead.
+  string anymal_name = 1;        // ANYmal name.
+  string mission_id = 2;         // The ID of a predefined mission.
+  string initial_task = 3;       // Identifier of the initial task if differs from the default, optional.
+  MissionType mission_type = 4;  // Specify if a predefined or an ad-hoc mission should be started
+  MissionPlan mission_plan = 5;  // Simple ad hoc mission definition
+
+  AnyMissionDescription mission_description = 6;  // Description of the mission to be started.
+}
+
+/**
+ * Request to pause a running mission.
+ */
+message PauseMissionRequest {
+  Uid mission_run_uid = 1 [deprecated = true];  // Deprecated by run_uid
+  string run_uid = 2;  // (optional) Unique identifier of the mission run to guarantee that the target mission is controlled. If not
+                       // set, any running mission is paused.
+  // @exclude Not the same as ResumeMissionRequest, because we might want to add more fields in the future.
+}
+
+/**
+ * Request to resume a paused mission.
+ */
+message ResumeMissionRequest {
+  Uid mission_run_uid = 1 [deprecated = true];  // Deprecated by run_uid
+  string run_uid = 2;  // (optional) Unique identifier of the mission run to guarantee that the target mission is controlled. If not
+                       // set, any running mission is resumed.
+  // @exclude Not the same as PauseMissionRequest, because we might want to add more fields in the future.
+}
+
+/**
+ * Request message of the to ControlMission RPC.
+ */
+message ControlMissionRequest {
+  string anymal_name = 1;  // ANYmal name.
+  oneof command {
+    StartMissionRequest start = 2;    // Start a mission.
+    PauseMissionRequest pause = 3;    // Pause a mission.
+    ResumeMissionRequest resume = 4;  // Resume a mission.
+  }
+}
+
+/**
+ * Response message of the ControlMission RPC.
+ */
+message ControlMissionResponse {
+  AnymalServiceResponseHeader header = 1;  // Header.
+  ControlMissionStatus control_mission_status =
+      2;  // (optional) Mission status, only set if the service call status as indicated in the header is OK.
+  Uid mission_run_uid = 3 [deprecated = true];  // Deprecated by run_uid
+  string message = 4;                           // (optional) Human-readable description of the status
+  string run_uid = 5;  // (optional) Unique identifier of the mission run, only set when starting missions if control mission status is OK.
+}
+
+/**
+ * Status code for controlling the mission execution on an ANYmal.
+ */
+enum ControlMissionStatus {
+  CMS_UNDEFINED = 0;              // Best practice: 0 must be UNDEFINED.
+  CMS_OK = 1;                     // Mission was successfully started, paused, or resumed.
+  CMS_ERROR_REQUEST_INVALID = 2;  // The requested control message is malformed or not valid, e.g. the task list is empty.
+  CMS_ERROR_MISSION_UNKNOWN = 3;  // Identifier of predefined mission (for starting a mission) or mission run identifier (for pausing or
+                                  // resuming a mission) are unknown.
+  CMS_ERROR_PROTECTIVE_STOP_ENABLED = 4;  // The robot's protective stop is enabled.
+  CMS_ERROR_POWER_CUT_ENABLED = 5;        // The robot's power cut is enabled.
+  CMS_ERROR_CONTROL_LEASE_UNOWNED = 6;    // Requesting client does not own the control authority.
+  CMS_ERROR_MANUAL_MODE = 7;              // The robot's is in manual mode.
+  CMS_ERROR_NO_MISSION = 8;               // There is no mission currently loaded.
+  CMS_ERROR_MISSION_PAUSED = 9;           // The loaded mission is currently paused, and hence can't be paused again.
+  CMS_ERROR_MISSION_EXECUTING = 10;       // The loaded mission is currently running, and hence can't be resumed or changed.
+  CMS_ERROR_UNKNOWN = 11;                 // Unknown error.
+}
+
+/**
+ * Request message of the GetPredefinedMissions RPC.
+ */
+message GetPredefinedMissionsRequest {
+  string anymal_name = 1;  // ANYmal name.
+  // @exclude Filtering options can be added here in the future.
+}
+
+/**
+ * Response message of the GetPredefinedMissions RPC.
+ */
+message GetPredefinedMissionsResponse {
+  AnymalServiceResponseHeader header = 1;  // Header.
+  // @exclude TODO(jvelasco): deprecate temporary header response (field 1).
+  reserved 2;  // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  repeated MissionDescriptionMetadata missions_metadata =
+      3;               // List of metadata of available predefined missions, only set if the service call status is OK.
+  string message = 4;  // (optional) Human-readable description of the status.
+}
+
+/**
+ * Request message of the GetMission RPC.
+ */
+message GetMissionRequest {
+  string anymal_name = 1;          // ANYmal name.
+  string mission_uid = 2;          // The UID of a predefined mission.
+  bool full_task_description = 3;  // If true, the full task description is returned. If false, only the task uids are returned
+  // @exclude Filtering options can be added here in the future.
+}
+
+/**
+ * Response message of the GetMission RPC.
+ */
+message GetMissionResponse {
+  enum Status {
+    UNSPECIFIED = 0;            // Unspecified (proto best practice)
+    OK = 1;                     // Success
+    ERROR_UNKNOWN = 2;          // Unknown error
+    ERROR_ID_NOT_FOUND = 3;     // The requested mission ID was not found
+    ERROR_REQUEST_PENDING = 4;  // A request is already pending. Try again later
+  }
+
+  AnymalServiceResponseHeader header = 1;  // Header.
+  // @exclude TODO: deprecate temporary header response (field 1).
+  reserved 2;  // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  MissionDescription mission_description = 3;  // Description of the predefined mission, only set if the service call status is OK.
+  string message = 4;                          // (optional) Human-readable description of the status.
+  Status status = 5;                           // Status of the response - only valid if the service call status is OK.
+}
+
+/**
+ * Request message of the CreatMission RPC.
+ */
+message CreateMissionRequest {
+  string anymal_name = 1;                      // ANYmal name.
+  MissionDescription mission_description = 2;  // Description of the mission to be created.
+}
+
+/**
+ * Response message of the CreatMission RPC.
+ */
+message CreateMissionResponse {
+  enum Status {
+    UNSPECIFIED = 0;                        // Unspecified (proto best practice)
+    OK = 1;                                 // Success
+    ERROR_UNKNOWN = 2;                      // Unknown error
+    ERROR_ID_ALREADY_EXISTS = 3;            // The requested mission ID already exists
+    ERROR_REQUEST_PENDING = 4;              // A request is already pending. Try again later
+    ERROR_MISSION_DESCRIPTION_INVALID = 5;  // The requested mission description is invalid
+    ERROR_CONTROL_LEASE_UNOWNED = 6;        // The requesting client does not own the control authority
+  }
+
+  AnymalServiceResponseHeader header = 1;  // Header.
+  // @exclude TODO: deprecate temporary header response (field 1).
+  reserved 2;              // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  string mission_uid = 3;  // Unique identifier of the created mission, only set if the service call status is OK.
+  string message = 4;      // (optional) Human-readable description of the status.
+  Status status = 5;       // Status of the response - only valid if the service call status is OK.
+}
+
+/**
+ * Request to delete an existing mission.
+ */
+message DeleteMissionRequest {
+  string anymal_name = 1;  // ANYmal name.
+  string mission_uid = 2;  // Description of the predefined mission to be deleted.
+}
+
+/**
+ * Response to the request to delete an existing mission.
+ */
+message DeleteMissionResponse {
+  enum Status {
+    UNSPECIFIED = 0;                  // Unspecified (proto best practice)
+    OK = 1;                           // Success
+    ERROR_UNKNOWN = 2;                // Unknown error
+    ERROR_ID_NOT_FOUND = 3;           // The requested mission ID was not found
+    ERROR_REQUEST_PENDING = 4;        // A request is already pending. Try again later
+    ERROR_CONTROL_LEASE_UNOWNED = 5;  // The requesting client does not own the control authority
+  }
+
+  AnymalServiceResponseHeader header = 1;  // Header.
+                                           // @exclude TODO: deprecate temporary header response (field 1).
+  reserved 2;          // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  string message = 3;  // (optional) Human-readable description of the status.
+  Status status = 4;   // Status of the response - only valid if the service call status is OK.
+}
+
+message UpdateMissionRequest {
+  string anymal_name = 1;                      // ANYmal name.
+  MissionDescription mission_description = 2;  // Description of the predefined mission to be updated.
+}
+
+message UpdateMissionResponse {
+  enum Status {
+    UNSPECIFIED = 0;                        // Unspecified (proto best practice)
+    OK = 1;                                 // Success
+    ERROR_UNKNOWN = 2;                      // Unknown error
+    ERROR_ID_NOT_FOUND = 3;                 // The requested mission ID was not found
+    ERROR_REQUEST_PENDING = 4;              // A request is already pending. Try again later
+    ERROR_MISSION_DESCRIPTION_INVALID = 5;  // The requested mission description is invalid
+    ERROR_CONTROL_LEASE_UNOWNED = 6;        // The requesting client does not own the control authority
+  }
+
+  AnymalServiceResponseHeader header = 1;  // Header.
+  reserved 2;          // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  string message = 3;  // (optional) Human-readable description of the status.
+  Status status = 4;   // Status of the response - only valid if the service call status is OK.
+}
+
+/**
+ * Status code for interacting with a mission.
+ */
+enum InteractMissionStatus {
+  IMS_OK = 0;               // Mission was successfully started, paused, resumed or stopped.
+  IMS_MISSION_UNKNOWN = 1;  // Mission plan ID or mission ID could not be found.
+  IMS_REQUEST_INVALID =
+      2;  // The requested interaction is not valid, e.g. the running mission cannot be resumed, because it has already completed.
+  IMS_ERROR_UNKNOWN = 3;  // Unknown error
+}
+
+/**
+ * DEPRECATED: Use ControlMission RPC instead.
+ * Deprecated at 24.09. Obsoleted at 25.05.
+ *
+ * Types of mission interactions.
+ */
+// enum InteractMissionType {
+//   option deprecated = true;
+//   IMT_START = 0;   // Start the mission. Currently unused.
+//   IMT_PAUSE = 1;   // Pause the mission.
+//   IMT_RESUME = 2;  // Resume the mission.
+//   IMT_STOP = 3;    // Stop the mission. Currently unused.
+// }
+
+/**
+ * DEPRECATED: Use ControlMission RPC instead.
+ * Deprecated at 24.09. Obsoleted at 25.05.
+ *
+ * Request to interact with a mission.
+ */
+// message InteractMissionRequest {
+//   option deprecated = true;
+//   string anymal_name = 1;               // ANYmal name.
+//   string mission_run_id = 2;            // The UUID of the mission run.
+//   InteractMissionType interaction = 3;  // Type of mission interaction.
+// }
+
+/**
+ * DEPRECATED: Use ControlMission RPC instead.
+ * Deprecated at 25.06. Obsoleted at 25.12.
+ *
+ * Response for the request to start, pause, resume, or stop a mission.
+ */
+message InteractMissionResponse {
+  option deprecated = true;
+  ServiceCallStatus status = 1;                       //
+  InteractMissionStatus interact_mission_status = 2;  // Success or failure status.
+  Timestamp timestamp = 3;                            // Timestamp of the response.
+  string mission_run_id = 4;                          // UUID of the mission (when status is IMS_OK).
+  string message = 5;                                 // Human-readable description of the status (optional)
+}
+
+/**
+ * Request to get mission status of the robot (if mission is currently running)
+ */
+message GetMissionStatusRequest {
+  string anymal_name = 1;  // ANYmal name.
+}
+
+/**
+ * Response message of getting mission status.
+ */
+message GetMissionStatusResponse {
+  AnymalServiceResponseHeader header = 1;  // Header.
+  // @exclude TODO(jvelasco): deprecate temporary header response (field 1).
+  reserved 2;                // Purposely reserving the field for the final header: DataServerServiceResponseHeader header = 2;  // Header.
+  MissionStatus status = 3;  // Current mission status.
+}

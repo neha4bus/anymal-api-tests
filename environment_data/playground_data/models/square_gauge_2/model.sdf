@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="square_gauge_2">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="square_gauge_2_link">
+      <visual name="square_gauge_2_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://square_gauge_2/meshes/square_gauge_2.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
+ 

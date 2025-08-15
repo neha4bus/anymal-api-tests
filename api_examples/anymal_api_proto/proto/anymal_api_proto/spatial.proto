@@ -1,0 +1,114 @@
+/**
+ * Messages that define spatial entities.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Numerical values of a position.
+ */
+message PositionValue {
+  double x_double = 1 [deprecated = true];  // Deprecated at 24.04: use the float type `x` instead.X-component of the position in meters.
+  double y_double = 2 [deprecated = true];  // Deprecated at 24.04: use the float type `y` instead.Y-component of the position in meters.
+  double z_double = 3 [deprecated = true];  // Deprecated at 24.04: use the float type `z` instead.Z-component of the position in meters.
+  float x = 4;                              // X-component of the position in meters.
+  float y = 5;                              // Y-component of the position in meters.
+  float z = 6;                              // Z-component of the position in meters.
+}
+
+/**
+ * Position with respect to a frame.
+ */
+message Position {
+  string frame_id = 1;      // Reference frame.
+  PositionValue value = 2;  // Position values.
+}
+
+/**
+ * Numerical values of an orientation.
+ * Represented as a rotation quaternion (Hamilton convention).
+ */
+message OrientationValue {
+  double qx_double = 1
+      [deprecated = true];  // Deprecated at 24.04: use the float type `qx` instead. X-component of the rotation quaternion.
+  double qy_double = 2
+      [deprecated = true];  // Deprecated at 24.04: use the float type `qy` instead. Y-component of the rotation quaternion.
+  double qz_double = 3
+      [deprecated = true];  // Deprecated at 24.04: use the float type `qz` instead. Z-component of the rotation quaternion.
+  double qw_double = 4
+      [deprecated = true];  // Deprecated at 24.04: use the float type `qw` instead. W-component of the rotation quaternion.
+  float qx = 5;             // X-component of the rotation quaternion.
+  float qy = 6;             // Y-component of the rotation quaternion.
+  float qz = 7;             // Z-component of the rotation quaternion.
+  float qw = 8;             // W-component of the rotation quaternion.
+}
+
+/**
+ * Orientation with respect to a frame.
+ */
+message Orientation {
+  string frame_id = 1;         // Reference frame.
+  OrientationValue value = 2;  // Orientation value.
+}
+
+/**
+ * Numerical values of a pose.
+ */
+message PoseValue {
+  PositionValue position = 1;        // Position value.
+  OrientationValue orientation = 2;  // Orientation value.
+}
+
+/**
+ * Pose with respect to a frame.
+ */
+message Pose {
+  string frame_id = 1;  // Reference frame. If set to invalid then no valid pose could be found.
+  PoseValue value = 2;  // Pose value. If no valid pose was found the value will be (0,0,0) [0,0,0,0]
+}
+
+/**
+ * Pose with respect to a frame at a given time.
+ */
+message PoseAtTime {
+  Timestamp timestamp = 1;  // Timestamp of the pose.
+  Pose pose = 2;            // Pose with respect to a frame.
+}
+
+/**
+ * Size of an object in 3D.
+ */
+message Size {
+  double width = 1;   // Width in meters.
+  double height = 2;  // Height in meters.
+  double length = 3;  // Length in meters.
+}
+
+/**
+ * Size of an object in 2D.
+ */
+message Size2d {
+  double width = 1;   // Width in meters.
+  double height = 2;  // Height in meters.
+}
+
+/**
+ * Rectangle in 2D.
+ */
+message Rectangle {
+  double x = 1;       // X coordinate of the center of the rectangle.
+  double y = 2;       // Y coordinate of the center of the rectangle.
+  double width = 3;   // Width of the rectangle.
+  double height = 4;  // Height of the rectangle.
+}
+
+/**
+ * Tolerance of a pose.
+ */
+message Tolerance {
+  float translation = 1;  // (optional) Translation tolerance in meters.
+  float rotation = 2;     // (optional) Rotation tolerance in radians.
+}

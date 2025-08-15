@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <!-- Load ROS parameters -->
+  <include file="$(find state_machine_example)/launch/load_ros_parameters.launch"/>
+
+  <!-- Run test -->
+  <test pkg="state_machine_example" type="test_state_machine_example_node" test-name="state_machine_example" time-limit="20.0"/>
+
+</launch>

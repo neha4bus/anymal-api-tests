@@ -1,0 +1,31 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+import time
+
+from anymal_sdk_example import parse_cli_arguments, ANYmalExampleHandler
+
+
+def main():
+    # Parse command line arguments.
+    args = parse_cli_arguments()
+
+    print("Running ANYmal state example.")
+    anymal_name = input("Name of your ANYmal: ")
+    test_api = ANYmalExampleHandler("anymal-state-test", anymal_name, args)
+
+    test_api.create_communication_interface()
+
+    try:
+        # Start listening to state events by registering a callback.
+        test_api.register_anymal_state_callbacks()
+        # Wait until we receive Ctrl+C to terminate.
+        while True:
+            time.sleep(2)
+    except KeyboardInterrupt:
+        # Clean up the open interfaces, sessions and the client.
+        test_api.close_communication_interface()
+        test_api.close_session()
+
+
+if __name__ == "__main__":
+    main()

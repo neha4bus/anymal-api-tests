@@ -1,0 +1,119 @@
+name: InspectSecondFloor
+settings:
+  - name: initial_state
+    type: InitialState
+    value: InspectGroundFloor1
+  - name: outcomes
+    type: Outcomes
+    value:
+      - anomaly
+      - failure
+      - preemption
+      - success
+  - name: restart_on_execution
+    type: bool
+    value: false
+  - name: states
+    type: States
+    value:
+      - name: InspectFirstFloor1
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: FirstFloor1
+        transitions:
+          - outcome: failure
+            transition: InspectSecondFloor1
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: InspectSecondFloor1
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectGroundFloor1
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: GroundFloor1
+        transitions:
+          - outcome: failure
+            transition: InspectGroundFloor2
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: InspectGroundFloor2
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectGroundFloor2
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: GroundFloor2
+        transitions:
+          - outcome: failure
+            transition: InspectFirstFloor1
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: InspectFirstFloor1
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectSecondFloor1
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: SecondFloor1
+        transitions:
+          - outcome: failure
+            transition: InspectSecondFloor2
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: InspectSecondFloor2
+            transition_to_state: true
+        type: visual_inspection_simple_behavior_plugins::Inspect
+      - name: InspectSecondFloor2
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: SecondFloor2
+        transitions:
+          - outcome: anomaly
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: failure
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: normal
+            transition: NavigateToStart
+            transition_to_state: true
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+        type: visual_inspection_thermal_behavior_plugins::Inspect
+      - name: NavigateToStart
+        settings:
+          - name: navigation_goal
+            type: NavigationGoal
+            value: Start
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: failure
+            transition_to_state: false
+          - outcome: success
+            transition: success
+            transition_to_state: false
+        type: navigation_behavior_plugins::ReactiveNavigation
+type: state_machine::DynamicStateMachine
+

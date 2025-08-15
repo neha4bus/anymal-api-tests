@@ -1,0 +1,1234 @@
+object_relations:
+  - child: GroundFloorNavigationGoal1
+    parent: GroundFloorInspectionZone1
+  - child: GroundFloorNavigationGoal3
+    parent: GroundFloorInspectionIntelligenceZone1
+  - child: FirstFloorNavigationGoal1
+    parent: FirstFloorInspectionZone1
+  - child: FirstFloorNavigationGoal2
+    parent: FirstFloorInspectionZone2
+  - child: GroundFloorNavigationGoal2
+    parent: GroundFloorInspectionZone2
+  - child: MazeEntranceNavigationGoal
+    parent: MazeEntranceInspectionZone
+  - child: MazeInsideNavigationGoal1
+    parent: MazeInsideInspectionZone1
+  - child: MazeInsideNavigationGoal2
+    parent: MazeInsideInspectionZone2
+  - child: MazeInsideNavigationGoal3
+    parent: MazeInsideInspectionZone3
+  - child: MazeInsideNavigationGoal4
+    parent: MazeInsideInspectionZone4
+  - child: MazeInsideNavigationGoal5
+    parent: MazeInsideInspectionZone5
+  - child: MazeInsideNavigationGoal6
+    parent: MazeInsideInspectionZone6
+  - child: MazeExitNavigationGoal
+    parent: MazeExitInspectionZone
+  - child: SecondFloorNavigationGoal1
+    parent: SecondFloorInspectionZone1
+  - child: SecondFloorNavigationGoal2
+    parent: SecondFloorInspectionZone2
+  - child: GroundFloorInspectionZone1
+    parent: GroundFloor1
+  - child: GroundFloorInspectionZone1
+    parent: GroundFloor2
+  - child: FirstFloorInspectionZone1
+    parent: FirstFloor1
+  - child: FirstFloorInspectionZone1
+    parent: FirstFloor2
+  - child: FirstFloorInspectionZone2
+    parent: FirstFloor3
+  - child: FirstFloorInspectionZone2
+    parent: FirstFloor4
+  - child: GroundFloorInspectionZone2
+    parent: GroundFloor3
+  - child: MazeEntranceInspectionZone
+    parent: MazeEntrance
+  - child: MazeInsideInspectionZone1
+    parent: MazeInside1
+  - child: MazeInsideInspectionZone2
+    parent: MazeInside2
+  - child: MazeInsideInspectionZone3
+    parent: MazeInside3
+  - child: MazeInsideInspectionZone4
+    parent: MazeInside4
+  - child: MazeInsideInspectionZone5
+    parent: MazeInside5
+  - child: MazeInsideInspectionZone6
+    parent: MazeInside6
+  - child: MazeExitInspectionZone
+    parent: MazeExit
+  - child: SecondFloorInspectionZone1
+    parent: SecondFloor1
+  - child: SecondFloorInspectionZone2
+    parent: SecondFloor2
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: RoundGauge001_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: RoundGauge002_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: RoundGauge003_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: SquareGauge001_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: SquareGauge002_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: FireExtinguisher001_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: FireExtinguisher002_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: LinearGauge001_II
+  - child: GroundFloorInspectionIntelligenceZone1
+    parent: SafetyHelmet001_II
+objects:
+  - label: Docking Station
+    name: DockingStation
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -2.0
+          y: 0.5
+          z: 0.52
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: docking_station
+  - label: Docking Station Alignment
+    name: DockingStationAlignment
+    pose:
+      header:
+        frame_id: docking_port
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -0.343
+          y: 0.0
+          z: 0.52
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Docking Station Entry
+    name: DockingStationEntry
+    pose:
+      header:
+        frame_id: docking_port
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -0.7
+          y: 0.0
+          z: 0.52
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Docking Station Exit
+    name: DockingStationExit
+    pose:
+      header:
+        frame_id: docking_port
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -1.0
+          y: 0.0
+          z: 0.52
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Docking Station Navigation Goal
+    name: DockingStationNavigationGoal
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -1.0
+          y: 0.5
+          z: 0.52
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - camera_type: thermal
+    label: "First Floor 1: visual inspection simple thermal"
+    name: FirstFloor1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -6.0
+          y: -9.45
+          z: 1.5
+    size:
+      height: 0.9
+      width: 0.9
+    template_id: 0
+    type: visual_inspection_simple
+  - frequency_range: normal
+    label: "First Floor 2: auditive inspection simple"
+    name: FirstFloor2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -5.97
+          y: -8.31
+          z: 1.53
+    recording_length: 5.0
+    type: auditive_inspection_simple
+  - bin_tolerance: 2
+    buffer_size: 131072
+    continuous: false
+    filter_frequencies:
+      - 425.4
+    filter_use_harmonics: false
+    frequency_range: normal
+    fundamental_frequencies:
+      - 380.18
+    inspection_size: 65536
+    label: "First Floor 3: auditive inspection frequency"
+    min_certainty: 0.6
+    name: FirstFloor3
+    number_of_signal_bins: 40
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: -2.94
+          y: -11.86
+          z: 1.53
+    recording_length: 10.0
+    snr_threshold: -18.0
+    timeout: 10.0
+    type: auditive_inspection_frequency
+    use_harmonics: true
+  - label: "First Floor 4: visual inspection thermal"
+    min_certainty: 0.6
+    name: FirstFloor4
+    normal_operating_range:
+      max: 80.0
+      min: 40.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -5.5
+          y: -12.0
+          z: 1.5
+    size:
+      height: 0.9
+      width: 0.9
+    type: visual_inspection_thermal
+    unit: degreesC
+  - label: First Floor Inspection Zone 1
+    name: FirstFloorInspectionZone1
+    type: navigation_zone
+  - label: First Floor Inspection Zone 2
+    name: FirstFloorInspectionZone2
+    type: navigation_zone
+  - label: First Floor Navigation Goal 1
+    name: FirstFloorNavigationGoal1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.95
+          x: 0.0
+          y: 0.0
+          z: -0.31
+        position:
+          x: -5.97
+          y: -7.31
+          z: 1.53
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: First Floor Navigation Goal 2
+    name: FirstFloorNavigationGoal2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.71
+          x: 0.0
+          y: 0.0
+          z: -0.71
+        position:
+          x: -2.94
+          y: -10.86
+          z: 1.53
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: "Ground Floor 1: pressure gauge"
+    min_certainty: 0.6
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: GroundFloor1
+    normal_operating_range:
+      max: 4.0
+      min: 0.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.707106781
+          x: 0.0
+          y: 0.0
+          z: 0.707106781
+        position:
+          x: -6.0
+          y: -6.45
+          z: 0.8
+    range_angle:
+      max: 5.65486677646163
+      min: 0.628318530717959
+    range_value:
+      max: 4.0
+      min: 0.0
+    size:
+      height: 0.1
+      width: 0.1
+    template_id: 501
+    type: visual_inspection_dial
+    unit: bar
+  - camera_type: normal
+    label: "Ground Floor 2: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: GroundFloor2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -3.0
+          y: -6.5
+          z: 0.2
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Ground Floor 3: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: GroundFloor3
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 4.1
+          y: -12.0
+          z: 0.54
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - label: Ground Floor Inspection Zone 1
+    name: GroundFloorInspectionZone1
+    type: navigation_zone
+  - label: Ground Floor Inspection Intelligence Zone 1
+    name: GroundFloorInspectionIntelligenceZone1
+    type: navigation_zone
+  - label: Ground Floor Inspection Zone 2
+    name: GroundFloorInspectionZone2
+    type: navigation_zone
+  - label: Ground Floor Navigation Goal 1
+    name: GroundFloorNavigationGoal1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.39
+          x: 0.0
+          y: 0.0
+          z: -0.92
+        position:
+          x: -6.56
+          y: -3.51
+          z: 0.5
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Ground Floor Navigation Goal 2
+    name: GroundFloorNavigationGoal2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: 3.16
+          y: -10.99
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Ground Floor Navigation Goal 3
+    name: GroundFloorNavigationGoal3
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.7071068
+          x: 0.0
+          y: 0.0
+          z: -0.7071068
+        position:
+          x: -10.5
+          y: -7.3
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - camera_type: thermal
+    label: "Maze entrance: visual inspection simple thermal"
+    name: MazeEntrance
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 7.75
+          y: -2.0
+          z: 1.5
+    size:
+      height: 0.15
+      width: 0.15
+    template_id: 0
+    type: visual_inspection_simple
+  - label: Maze Entrance Inspection Zone
+    name: MazeEntranceInspectionZone
+    type: navigation_zone
+  - label: Maze Entrance Navigation Goal
+    name: MazeEntranceNavigationGoal
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.91
+          x: 0.0
+          y: 0.0
+          z: 0.41
+        position:
+          x: 7.71
+          y: -3.32
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: "Maze exit: pressure gauge"
+    min_certainty: 0.6
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeExit
+    normal_operating_range:
+      max: 4.0
+      min: 0.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 15.7
+          y: 10.05
+          z: 1.6
+    range_angle:
+      max: 5.65486677646163
+      min: 0.628318530717959
+    range_value:
+      max: 4.0
+      min: 0.0
+    size:
+      height: 0.1
+      width: 0.1
+    template_id: 501
+    type: visual_inspection_dial
+    unit: bar
+  - label: Maze Exit Inspection Zone
+    name: MazeExitInspectionZone
+    type: navigation_zone
+  - label: Maze Exit Navigation Goal
+    name: MazeExitNavigationGoal
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.86
+          x: 0.0
+          y: 0.0
+          z: -0.51
+        position:
+          x: 14.5
+          y: 11.5
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - camera_type: normal
+    label: "Maze inside 1: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 15.0
+          y: 4.5
+          z: 1.7
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Maze inside 2: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 8.0
+          y: 1.6
+          z: 1.6
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Maze inside 3: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside3
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 10.5
+          y: 9.0
+          z: 1.65
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Maze inside 4: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside4
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 10.0
+          y: 4.5
+          z: 1.6
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Maze inside 5: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside5
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 13.6
+          y: 6.9
+          z: 1.5
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - camera_type: normal
+    label: "Maze inside 6: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: MazeInside6
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: 15.0
+          y: 5.0
+          z: 1.6
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - label: Maze Inside Inspection Zone 1
+    name: MazeInsideInspectionZone1
+    type: navigation_zone
+  - label: Maze Inside Inspection Zone 2
+    name: MazeInsideInspectionZone2
+    type: navigation_zone
+  - label: Maze Inside Inspection Zone 3
+    name: MazeInsideInspectionZone3
+    type: navigation_zone
+  - label: Maze Inside Inspection Zone 4
+    name: MazeInsideInspectionZone4
+    type: navigation_zone
+  - label: Maze Inside Inspection Zone 5
+    name: MazeInsideInspectionZone5
+    type: navigation_zone
+  - label: Maze Inside Inspection Zone 6
+    name: MazeInsideInspectionZone6
+    type: navigation_zone
+  - label: Maze Inside Navigation Goal 1
+    name: MazeInsideNavigationGoal1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.72
+          x: 0.0
+          y: 0.0
+          z: 0.69
+        position:
+          x: 14.78
+          y: 2.0
+          z: 0.54
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Maze Inside Navigation Goal 2
+    name: MazeInsideNavigationGoal2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.57
+          x: 0.0
+          y: 0.0
+          z: 0.82
+        position:
+          x: 12.48
+          y: 0.82
+          z: 0.56
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Maze Inside Navigation Goal 3
+    name: MazeInsideNavigationGoal3
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: 8.67
+          y: 9.0
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Maze Inside Navigation Goal 4
+    name: MazeInsideNavigationGoal4
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.71
+          x: 0.0
+          y: 0.0
+          z: -0.71
+        position:
+          x: 10.0
+          y: 7.2
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Maze Inside Navigation Goal 5
+    name: MazeInsideNavigationGoal5
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.71
+          x: 0.0
+          y: 0.0
+          z: 0.71
+        position:
+          x: 12.0
+          y: 6.0
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Maze Inside Navigation Goal 6
+    name: MazeInsideNavigationGoal6
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.71
+          x: 0.0
+          y: 0.0
+          z: -0.71
+        position:
+          x: 15.0
+          y: 8.0
+          z: 0.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - camera_type: normal
+    label: "Second Floor 1: visual inspection simple"
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: SecondFloor1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.4
+          y: -16.9
+          z: 2.8
+    size:
+      height: 0.13
+      width: 0.13
+    template_id: 0
+    type: visual_inspection_simple
+  - label: "Second Floor 2: pressure gauge"
+    min_certainty: 0.6
+    min_pixel_size:
+      detecting: 128
+      reading: 260
+    name: SecondFloor2
+    normal_operating_range:
+      max: 4.0
+      min: 0.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -17.7
+          y: -3.9
+          z: 0.5
+    range_angle:
+      max: 5.65486677646163
+      min: 0.628318530717959
+    range_value:
+      max: 4.0
+      min: 0.0
+    size:
+      height: 0.1
+      width: 0.1
+    template_id: 501
+    type: visual_inspection_dial
+    unit: bar
+  - label: Second Floor Inspection Zone 1
+    name: SecondFloorInspectionZone1
+    type: navigation_zone
+  - label: Second Floor Inspection Zone 2
+    name: SecondFloorInspectionZone2
+    type: navigation_zone
+  - label: Second Floor Navigation Goal 1
+    name: SecondFloorNavigationGoal1
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: -0.71
+          x: 0.0
+          y: 0.0
+          z: 0.71
+        position:
+          x: -7.1
+          y: -16.0
+          z: 2.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Second Floor Navigation Goal 2
+    name: SecondFloorNavigationGoal2
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.71
+          x: 0.0
+          y: 0.0
+          z: 0.71
+        position:
+          x: -14.0
+          y: -4.6
+          z: 2.51
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: GroundFloorNavigationGoal4
+    name: GroundFloorNavigationGoal4
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.165722
+          x: -0.000235
+          y: -0.000132
+          z: -0.986172
+        position:
+          x: -2.061
+          y: 4.489
+          z: 0.53
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: GroundFloorNavigationGoal5
+    name: GroundFloorNavigationGoal5
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.707025
+          x: -0.000264
+          y: -0.000241
+          z: -0.707189
+        position:
+          x: -10.859
+          y: 3.044
+          z: 0.531
+      tolerance:
+        rotation: 0.1
+        translation: 0.05
+    type: navigation_goal
+  - label: Start
+    name: Start
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        position:
+          x: 0.0
+          y: 0.0
+          z: 0.52
+      tolerance:
+        rotation: 0.0
+        translation: 0.05
+    type: navigation_goal
+  - label: "Round Gauge 001 II"
+    measurement_range:
+      max: 1.0
+      min: 0.0
+    min_certainty: 0.6
+    name: RoundGauge001_II
+    normal_operating_range:
+      max: 0.15
+      min: 0.05
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -6.9
+          z: 0.85
+    size:
+      height: 0.1
+      width: 0.1
+    type: inspection_intelligence
+    unit: bar
+    object_type: round_gauge
+  - label: "Round Gauge 002 II"
+    measurement_range:
+      max: 4.0
+      min: 0.0
+    min_certainty: 0.6
+    name: RoundGauge002_II
+    normal_operating_range:
+      max: 3.0
+      min: 2.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -7.7
+          z: 0.95
+    size:
+      height: 0.1
+      width: 0.1
+    type: inspection_intelligence
+    unit: bar
+    object_type: round_gauge
+  - label: "Round Gauge 003 II"
+    measurement_range:
+      max: 120.0
+      min: 0.0
+    min_certainty: 0.6
+    name: RoundGauge003_II
+    normal_operating_range:
+      max: 25.0
+      min: 15.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -7.35
+          z: 0.45
+    size:
+      height: 0.1
+      width: 0.1
+    type: inspection_intelligence
+    unit: Degrees Celsius
+    object_type: round_gauge
+  - label: "Square Gauge 001 II"
+    measurement_range:
+      max: 20.0
+      min: 0.0
+    min_certainty: 0.6
+    name: SquareGauge001_II
+    normal_operating_range:
+      max: 2.0
+      min: 0.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -7.2
+          z: 0.85
+    size:
+      height: 0.1
+      width: 0.1
+    type: inspection_intelligence
+    unit: A
+    object_type: square_gauge
+  - label: "Square Gauge 002 II"
+    min_certainty: 0.6
+    measurement_range:
+      max: 4.5
+      min: 0.0
+    name: SquareGauge002_II
+    normal_operating_range:
+      max: 2.0
+      min: 0.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -8.25
+          z: 0.55
+    size:
+      height: 0.1
+      width: 0.1
+    type: inspection_intelligence
+    unit: A
+    object_type: square_gauge
+  - label: "Fire Extinguisher 001 II"
+    min_certainty: 0.6
+    name: FireExtinguisher001_II
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -6.8
+          z: 0.27
+    size:
+      height: 0.5
+      width: 0.25
+    type: inspection_intelligence
+    unit: ""
+    object_type: fire_extinguisher
+  - label: "Fire Extinguisher 002 II"
+    min_certainty: 0.6
+    name: FireExtinguisher002_II
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -7.8
+          z: 0.27
+    size:
+      height: 0.5
+      width: 0.25
+    type: inspection_intelligence
+    unit: ""
+    object_type: fire_extinguisher
+  - label: "Linear Gauge 001 II"
+    measurement_range:
+      max: 60.0
+      min: 0.0
+    min_certainty: 0.6
+    name: LinearGauge001_II
+    normal_operating_range:
+      max: 15.0
+      min: 25.0
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -7.5
+          z: 0.9
+    size:
+      height: 0.12
+      width: 0.03
+    type: inspection_intelligence
+    unit: Degrees Celsius
+    object_type: linear_gauge
+  - label: "Safety Helmet 001 II"
+    min_certainty: 0.6
+    name: SafetyHelmet001_II
+    pose:
+      header:
+        frame_id: map
+      pose:
+        orientation:
+          w: 0.0
+          x: 0.0
+          y: 0.0
+          z: 1.0
+        position:
+          x: -8.52
+          y: -8.2
+          z: 1.0
+    size:
+      height: 0.3
+      width: 0.3
+    type: inspection_intelligence
+    unit: ""
+    object_type: safety_helmet

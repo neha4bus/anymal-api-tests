@@ -1,0 +1,33 @@
+#!/opt/ros/noetic/share/anymal_sdk_python39_environment/venv/bin/python
+
+import numpy as np
+from pathlib import Path
+
+from anymal_api_proto import Image, ThermalImage
+from anymal_sdk_example import show_thermal_image
+
+
+def main():
+    # 1. Populate the image.
+    # This would be done from the API itself, but for the sake of this example we populate it directly here.
+    thermal_image = ThermalImage()
+    thermal_image.image.width = 336
+    thermal_image.image.height = 256
+    thermal_image.image.step = 672
+    thermal_image.image.encoding = (
+        "mono16"  # The thermal image is encoded as mono16 (16bit single layer).
+    )
+    loaded_image = np.load(
+        str(Path(__file__).resolve().parent / "thermal_image_example.npy")
+    )
+    thermal_image.image.data = loaded_image.tobytes()
+
+    thermal_image.gain = 0.04
+    thermal_image.offset = -273.15
+
+    # 2. Show the image
+    show_thermal_image(thermal_image, "Thermal Image Example")
+
+
+if __name__ == "__main__":
+    main()

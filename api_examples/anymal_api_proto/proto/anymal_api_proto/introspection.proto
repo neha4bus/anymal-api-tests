@@ -1,0 +1,59 @@
+/**
+ * Contains definitions to query information about software versions of the robot and the Anymal Data Server.
+ */
+
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Service to retrieve introspection data, such as software version details.
+ */
+service IntrospectionService {
+  /**
+   * Retrieve the software version details.
+   */
+  rpc VersionDetails(VersionDetailsRequest) returns (VersionDetailsResponse);
+}
+
+/**
+ * Request message of the VersionDetails RPC.
+ */
+message VersionDetailsRequest {}
+
+/**
+ * Response message of the VersionDetails RPC.
+ */
+message VersionDetailsResponse {
+  Version version = 1;
+}
+
+/**
+ * Version control system (VCS) info
+ */
+message VersionControlSystemInfo {
+  string hash = 1;    // Commit hash
+  string tag = 2;     // Latest tag
+  string branch = 3;  // Branch of the build
+  int32 commits = 4;  // Commits ahead of the tag
+}
+
+/**
+ * Software metadata information
+ */
+message SoftwareMetaData {
+  string release = 1;                // Release used
+  string date = 2;                   // Date of the build
+  string environment = 3;            // Operational environment, e.g. developement, production, etc.
+  VersionControlSystemInfo vcs = 4;  // Info about the version control system
+}
+
+/**
+ * Configuration of ANYmal
+ */
+message AnymalConfiguration {
+  map<string, string> general = 1;
+  map<string, string> feature_toggles = 2;
+}

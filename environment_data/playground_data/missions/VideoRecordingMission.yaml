@@ -1,0 +1,99 @@
+name: VideoRecordingMission
+settings:
+  - name: default_initial_state
+    type: DefaultInitialState
+    value: Thermal Recording
+  - name: outcomes
+    type: Outcomes
+    value:
+      - failure
+      - preemption
+      - success
+  - name: restart_on_execution
+    type: bool
+    value: false
+  - name: states
+    type: States
+    value:
+      - name: Front Recording
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: VideoFront
+        transitions:
+          - outcome: failure
+            transition: Rear Recording
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: Rear Recording
+            transition_to_state: true
+        type: visual_inspection_video_recording_behavior_plugins::Inspect
+      - name: Rear Recording
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: VideoRear
+        transitions:
+          - outcome: failure
+            transition: failure
+            transition_to_state: false
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: success
+            transition_to_state: false
+        type: visual_inspection_video_recording_behavior_plugins::Inspect
+      - name: Thermal Raw Recording
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: VideoThermalRaw
+        transitions:
+          - outcome: failure
+            transition: Zoom Recording
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: Zoom Recording
+            transition_to_state: true
+        type: visual_inspection_video_recording_behavior_plugins::Inspect
+      - name: Thermal Recording
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: VideoThermal
+        transitions:
+          - outcome: failure
+            transition: Thermal Raw Recording
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: Thermal Raw Recording
+            transition_to_state: true
+        type: visual_inspection_video_recording_behavior_plugins::Inspect
+      - name: Zoom Recording
+        settings:
+          - name: inspectable_item
+            type: InspectableItem
+            value: VideoZoom
+        transitions:
+          - outcome: failure
+            transition: Front Recording
+            transition_to_state: true
+          - outcome: preemption
+            transition: preemption
+            transition_to_state: false
+          - outcome: success
+            transition: Front Recording
+            transition_to_state: true
+        type: visual_inspection_video_recording_behavior_plugins::Inspect
+type: state_machine::DynamicStateMachine
+

@@ -1,0 +1,42 @@
+/**
+ * Contains service definitions and messages related to the connection status of ANYmal to the ANYmal Server.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Services to get all robot connection states
+ */
+service ConnectionService {
+  rpc GetConnectionState(GetConnectionStateRequest) returns (GetConnectionStateResponse);
+}
+
+/**
+ * Request to get a connection state from all connected anymals (empty request).
+ */
+message GetConnectionStateRequest {}
+
+message ConnectionState {
+  Timestamp timestamp = 1;         // Timestamp of when the connection has been updated.
+  string anymal_name = 2;          // ANYmal name.
+  ConnectionStatus connected = 3;  // Enum indicating connection status of ANYmal with the server.
+}
+
+/**
+ * Response messages of ConnectionService RPC.
+ */
+message GetConnectionStateResponse {
+  repeated ConnectionState connections = 1;  // List of anymals connection status
+}
+
+/**
+ * Connection status of ANYmal to the ANYmal Data Server.
+ */
+enum ConnectionStatus {
+  CS_DISCONNECTED = 0;  // ANYmal is not connected.
+  CS_PARTIAL = 1;       // ANYmal is partially connected, but may not be able to provide full functionality.
+  CS_CONNECTED = 2;     // ANYmal is fully connected.
+}

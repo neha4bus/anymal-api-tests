@@ -1,0 +1,324 @@
+/**
+ * Contains definitions of messages used to control the robot.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Command to apply.
+ */
+enum SafetyCommand {
+  SCMD_UNDEFINED = 0;  // Best practice: 0 must be UNDEFINED.
+  SCMD_ENGAGE = 1;     // Engage the power-cut / protective stop.
+  SCMD_DISENGAGE = 2;  // Disengage the power-cut / protective stop.
+}
+
+/**
+ * Service to engage or disengage the protective stop.
+ * Warning: Depending on the robot state, engaging the protective stop can lead to collapses of the robot.
+ */
+service ProtectiveStopService {
+  /**
+   * Service to engage or disengage the protective stop.
+   * The client must own the control authority to be able to disengage the protective stop.
+   */
+  rpc ProtectiveStop(ProtectiveStopRequest) returns (ProtectiveStopServiceResponse);
+}
+
+/**
+ * Request message of the ProtectiveStop RPC.
+ */
+message ProtectiveStopRequest {
+  string anymal_name = 1;     // Name of the ANYmal.
+  SafetyCommand command = 2;  // Command to engage or disengage the protective stop.
+}
+
+/**
+ * Response message of the ProtectiveStop RPC.
+ */
+message ProtectiveStopServiceResponse {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string message = 2;            // Human-readable error message if the request was not successful.
+}
+
+/**
+ * Service to engage or disengage the power cut.
+ * Warning: Engaging the power cut will make the robot collapse.
+ */
+service PowerCutService {
+  /**
+   * Service to engage or disengage the power cut.
+   * The client must own the control authority to be able to disengange the power cut.
+   */
+  rpc PowerCut(PowerCutRequest) returns (PowerCutServiceResponse);
+}
+
+/**
+ * Request message of the PowerCut RPC.
+ */
+message PowerCutRequest {
+  string anymal_name = 1;     // Name of the ANYmal.
+  SafetyCommand command = 2;  // Command to engage or disengage the power cut.
+}
+
+/**
+ * Response message of the PowerCut RPC.
+ */
+message PowerCutServiceResponse {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string message = 2;            // Human-readable error message if the request was not successful.
+}
+
+/**
+ * Service to take & release control authority of an ANYmal.
+ */
+service ControlAuthorityService {
+  /**
+   * Service for the control authority life-cycle.
+   * The life-cycle is as follows:
+   *  1. Take control.
+   *  2. Periodically send heartbeats to indicate that your client is still alive.
+   *  3. Release control.
+   * The SDK provides helper functions to simplify this interation.
+   * Please refer to TakeControlRequestSdk and ReleaseControlRequestSdk.
+   */
+  rpc ControlAuthority(stream ControlAuthorityClientMsg) returns (stream ControlAuthorityServerMsg);
+
+  /**
+   * Service to get the current owner of the control.
+   */
+  rpc GetControlAuthorityStatus(GetControlAuthorityStatusRequest) returns (GetControlAuthorityStatusResponse);
+}
+
+/**
+ * Request message of the ControlAuthority RPC.
+ * Contains one of the life-cycle "requests" sent via the stream.
+ */
+message ControlAuthorityClientMsg {
+  string anymal_name = 1;  // Name of the ANYmal the client wants to acquire the control authority for.
+  oneof request {
+    LeaseControlRequest lease_control = 2;      // Request to take control authority of the robot.
+    ReleaseControlRequest release_control = 3;  // Request to release control authority of the robot.
+    ControlAuthorityHeartbeat heartbeat = 4;    // Control authority heartbeat message.
+  }
+}
+
+/**
+ * Response message of the ControlAuthority RPC.
+ * Contains responses to requests contained in the ControlAuthorityClientMsg.
+ */
+message ControlAuthorityServerMsg {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string message = 2;            // Human-readable error message if the request was not successful.
+  oneof response {
+    LeaseControlResponse lease_control = 3;   // Detailed response to a LeaseControlRequest.
+    ControlAuthorityHeartbeat heartbeat = 4;  // Response to a ControlAuthorityHeartbeat
+    ControlAuthorityAbortRequest abort = 5;   // The request to abort the control authority stream.
+  }
+}
+
+/**
+ * Control authority heartbeat message.
+ * This message needs to be sent at least once every 15seconds after taking control authority, otherwise the control authority will time
+ * out.
+ */
+message ControlAuthorityHeartbeat {
+  string lease_id = 1;      // ID of the current control authority which you've received in the LeaseControlResponse.
+  Timestamp timestamp = 2;  // Timestamp of the heartbeat.
+}
+
+/**
+ * Type of the client requesting the control authority.
+ * Clients with higher priority can "steal" control from clients with lower priority.
+ */
+enum ControlAuthorityClientType {
+  CLCT_ON_SITE = 0;    // For on-site clients which are controlled by an operator, having the best overview of the robot's situation and
+                       // environment. Highest prio.
+  CLCT_REMOTE = 1;     // For remote clients controlled by an operator. Mid prio.
+  CLCT_AUTOMATED = 2;  // For automated clients without an operator (e.g. mission scheduling script). Lowest prio.
+}
+
+/**
+ * Request to lease the control of ANYmal.
+ */
+message LeaseControlRequest {
+  string client_name = 1;                      // Name of the client requesting the control authority.
+  ControlAuthorityClientType client_type = 2;  // The type of the client.
+}
+
+/**
+ * Request to take control of an ANYmal using the SDK.
+ * This message is only used when interacting with the SDK. It will internally be converted to a `LeaseControlRequest` message.
+ * It has no use when using the gRPC interface directly.
+ */
+message TakeControlRequestSdk {
+  string anymal_name = 1;                      // Name of the ANYmal to take control of.
+  ControlAuthorityClientType client_type = 2;  // The type of the client.
+}
+
+/**
+ * Response to take control request of an ANYmal using the SDK.
+ * This message is only used when interacting with the SDK. It has no use when using the gRPC interface directly.
+ */
+message TakeControlResponseSdk {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string lease_id = 2;           // ID of the lease, filled if the request was successful.
+  string message = 3;            // Human-readable error message in case of failure.
+}
+
+/**
+ * Request to release control of an ANYmal using the SDK.
+ * This message is only used when interacting with the SDK. It will internally be converted to a `ReleaseControlRequest` message.
+ * It has no use when using the gRPC interface directly.
+ */
+message ReleaseControlRequestSdk {
+  string anymal_name = 1;  // Name of the ANYmal to release control of.
+};
+
+/**
+ * Response to release control request of an ANYmal using the SDK.
+ * This message is only used when interacting with the SDK. It has no use when using the gRPC interface directly.
+ */
+message ReleaseControlResponseSdk {
+  ServiceCallStatus status = 1;  // Result status of the request.
+  string message = 2;            // Human-readable error message in case of failure.
+};
+
+/**
+ * The request to abort the control authority stream.
+ * Empty message, just to differentiate from the other response messages.
+ * The reason for this request is included in the parent message.
+ */
+message ControlAuthorityAbortRequest {}
+
+/**
+ * Response of a successful lease control request.
+ */
+message LeaseControlResponse {
+  string lease_id = 1;  // The generated control authority id.
+}
+
+/**
+ * Request to release control of ANYmal.
+ */
+message ReleaseControlRequest {
+  string lease_id = 1;  // ID of the current control authority.
+}
+
+// @exclude TODO(PL): Do we actually need to include the lease_id here? Sharing this info makes it trivial for any client to abuse the
+// interface and circumvent the control autority mechanism.
+/**
+ * Control authority status message.
+ */
+message ControlAuthorityStatus {
+  string lease_id = 1;                         // ID of the current control authority.
+  string client_name = 2;                      // Name of the current control authority owner.
+  ControlAuthorityClientType client_type = 3;  // Type of the current control authority owner.
+}
+
+/**
+ * Request message of the GetControlAuthorityStatus RPC.
+ */
+message GetControlAuthorityStatusRequest {
+  string anymal_name = 1;  // Name of the ANYmal the client wants to know the current control authority of.
+}
+
+/**
+ * Response message of the GetControlAuthorityStatus RPC.
+ */
+message GetControlAuthorityStatusResponse {
+  ServiceCallStatus status = 1;                         // Result status of the request.
+  ControlAuthorityStatus control_authority_status = 2;  // Status of the control authority, only set if a client has control authority.
+}
+
+/**
+ * Service to interact with the user interaction mode of ANYmal.
+ */
+service UserInteractionModeService {
+  /**
+   * Service to get the currently active user interaction mode.
+   */
+  rpc GetUserInteractionMode(GetUserInteractionModeRequest) returns (GetUserInteractionModeResponse);
+
+  /**
+   * Service to change the user interaction mode.
+   * The user interaction mode can only be changed if the client has control authority.
+   */
+  rpc SetUserInteractionMode(SetUserInteractionModeRequest) returns (SetUserInteractionModeResponse);
+}
+
+/**
+ * Enum describing all possible user interaction modes.
+ */
+enum UserInteractionMode {
+  UIM_UNDEFINED = 0;            // Best practice: 0 must be UNDEFINED.
+  UIM_AUTONOMOUS = 1;           // In autonomous mode the robot can run predefined or ad-hoc missions.
+  UIM_MANUAL = 2;               // In manual mode the robot can be directly controlled by the OPC, Field Operator or API.
+  reserved 3;                   // UIM_MANUAL_RCU - Obsoleted after release 25.02.
+  UIM_AUTONOMOUS_REACTION = 4;  // In autonomous reaction mode the robot reacts to an event, e.g. low battery.
+}
+
+/**
+ * Request message of the GetUserInteractionMode RPC.
+ */
+message GetUserInteractionModeRequest {
+  string anymal_name = 1;  // Name of the ANYmal the client wants to know the current user interaction mode of.
+}
+
+/**
+ * Response of the GetUserInteractionMode RPC.
+ */
+message GetUserInteractionModeResponse {
+  AnymalServiceResponseHeader header = 1;         // Header with the result status.
+  UserInteractionMode user_interaction_mode = 2;  // Currently active user interaction mode.
+}
+
+/**
+ * Request message of the SetUserInteractionMode RPC
+ * The user interaction mode can only be changed if the client has control authority.
+ * The user interaction mode can only be set to UIM_AUTONOMOUS or UIM_MANUAL through the API.
+ */
+message SetUserInteractionModeRequest {
+  string anymal_name = 1;                         // Name of the ANYmal the client wants to set the user interaction mode of.
+  UserInteractionMode user_interaction_mode = 2;  // New user interaction mode to request. Can only be UIM_AUTONOMOUS or UIM_MANUAL.
+}
+
+/**
+ * Response message of the SetUserInteractionMode RPC.
+ */
+message SetUserInteractionModeResponse {
+  AnymalServiceResponseHeader header = 1;  // Header with the result status.
+}
+
+/**
+ * Enum listing all the different entities, which can trigger a protective stop.
+ */
+enum ProtectiveStopOrigin {
+  PSO_UNSET = 0;     // Unknown origin.
+  PSO_SOFTWARE = 1;  // Requested by ANYmal's software itself, for example if it detected a critical error.
+  reserved 2;        // PSO_RCU - Obsolete after release 25.02.
+  PSO_GUI = 3;       // Requested by an operator using a GUI.
+}
+
+/**
+ * Contains information about the protective stop status.
+ */
+message ProtectiveStopStatus {
+  bool is_engaged = 1;              // True if the protective stop is engaged.
+  ProtectiveStopOrigin origin = 2;  // Origin of the protective stop.
+}
+
+/**
+ * Status of the control of ANYmal.
+ */
+message ControlStatus {
+  Timestamp timestamp = 1;                        // Timestamp of this information.
+  RobotMetaData metadata = 2;                     // Robot metadata.
+  ControlAuthorityStatus lease = 3;               // Status of the control authority.
+  bool is_power_cut = 4;                          // Status of the power cut (true if the power is cut).
+  ProtectiveStopStatus protective_stop = 5;       // Status of the protective stop.
+  UserInteractionMode user_interaction_mode = 6;  // Current user interaction mode.
+}

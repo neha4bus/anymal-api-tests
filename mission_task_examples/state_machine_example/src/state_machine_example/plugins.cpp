@@ -1,0 +1,8 @@
+#include "state_machine_example/CalculateFibonacciSeries.hpp"
+#include "state_machine_example/CalculateTwoFibonacciSeriesSequentially.hpp"
+
+// Export all states as plugins.
+STATE_MACHINE_BEGIN_MANIFEST
+STATE_MACHINE_EXPORT_STATE(state_machine_example::CalculateFibonacciSeries)
+STATE_MACHINE_EXPORT_STATE(state_machine_example::CalculateTwoFibonacciSeriesSequentially)
+STATE_MACHINE_END_MANIFEST

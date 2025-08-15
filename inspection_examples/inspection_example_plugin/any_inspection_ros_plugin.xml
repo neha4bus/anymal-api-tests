@@ -1,0 +1,9 @@
+<library path="lib/libinspection_example_plugin">
+    <class name="inspection_example_plugin/InspectionExamplePlugin"
+           type="inspection_example_plugin::InspectionExamplePlugin"
+           base_class_type="any_inspection_ros::InspectionPluginInterfaceRos">
+        <description>
+            An inspection example plugin.
+        </description>
+    </class>
+</library>

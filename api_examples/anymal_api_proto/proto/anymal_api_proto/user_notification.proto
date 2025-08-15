@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ * Services required for the User Notification and Interaction Dispatcher (UNID).
+ */
+service UserNotificationService {
+  /**
+   * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+   * Send an answer to a user interaction.
+   * The client must own the control authority to select an answer.
+   */
+  rpc SelectAnswer(SelectAnswerRequest) returns (SelectAnswerResponse);
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ */
+message UserNotification {
+  string id = 1;    // unique event ID
+  string type = 2;  // Type of the notification: e.g. "LowBatteryCritical"
+  string message = 3;
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ */
+message UserInteraction {
+  string id = 1;    // unique event ID
+  string type = 2;  // Type of the interaction: e.g. "LowBatteryWarning"
+  string message = 3;
+  string default_option = 4;  // Name of the default option for the interaction
+  repeated UserInteractionOption options = 5;
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ */
+message UserInteractionOption {
+  string name = 1;
+  string description = 2;
+  bool selectable = 3;
+}
+
+/*
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ * Message sent from the client to the robot with the selected option as a reply to a user interaction.
+ */
+message SelectAnswerRequest {
+  string anymal_name = 1;
+  string id = 2;  // unique ID reference to an active UserInteraction
+  string selected_option = 3;
+}
+
+/*
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ * Message sent from the robot to the client after receiving an answer to an interaction.
+ */
+message SelectAnswerResponse {
+  AnymalServiceResponseHeader header = 1;  // Header with the result status.
+  UserInteractionAnswerStatus user_interaction_answer_status =
+      2;               // (optional) User Interaction Answer, only set if the service call status is OK.
+  string message = 3;  // (optional) Human-readable description of the status
+}
+
+/**
+ * EXPERIMENTAL: API definition can be subjective to changes and might not work as intended.
+ */
+enum UserInteractionAnswerStatus {
+  UNDEFINED = 0;
+  ANSWER_ACCEPTED = 1;
+  ERROR_EVENT_ID_NOT_FOUND = 2;
+  ERROR_NO_CONTROL_OWNER = 3;
+  ERROR_UNKNOWN = 4;
+}

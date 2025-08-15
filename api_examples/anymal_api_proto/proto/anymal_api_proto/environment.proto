@@ -1,0 +1,168 @@
+/**
+ * Contains service definitions, that interact with the robot's environment configuration.
+ */
+syntax = "proto3";
+
+package anymal_api_proto;
+
+import "anymal_api_proto/common.proto";
+
+/**
+ * Services to manage the environment data packages on ANYmal.
+ */
+service EnvironmentService {
+  /**
+   * Creates a new environment.
+   *
+   * The User Interaction Mode must be set to "MANUAL", and the client must own the control authority
+   * to create a new environment.
+   */
+  rpc CreateEnvironment(CreateEnvironmentRequest) returns (CreateEnvironmentResponse);
+
+  /**
+   * Loads an environment and switches to it.
+   *
+   * This process might take some time. This service call only returns once the switch is
+   * completed. The User Interaction Mode must be set to "MANUAL", and the client must own the control authority to load an environment.
+   */
+  rpc LoadEnvironment(LoadEnvironmentRequest) returns (LoadEnvironmentResponse);
+
+  /**
+   * Lists environments available on the robot.
+   */
+  rpc ListEnvironments(ListEnvironmentsRequest) returns (ListEnvironmentsResponse);
+
+  /**
+   * Sets the default environment which is loaded on robot startup.
+   *
+   * The User Interaction Mode must be set to "MANUAL", and the client must own the control authority
+   * to set the default environment.
+   */
+  rpc SetDefaultEnvironment(SetDefaultEnvironmentRequest) returns (SetDefaultEnvironmentResponse);
+
+  /**
+   * Deletes an environment.
+   *
+   * The User Interaction Mode must be set to "MANUAL", and the client must own the control authority
+   * to delete the environment.
+   */
+  rpc DeleteEnvironment(DeleteEnvironmentRequest) returns (DeleteEnvironmentResponse);
+}
+
+/**
+ * Status code for environment operations.
+ */
+enum EnvironmentStatus {
+  ES_UNDEFINED = 0;
+  ES_OK = 1;                                   // Environment operation was successful.
+  ES_ERROR_UNKNOWN = 2;                        // Unknown error.
+  ES_ERROR_MISSING_CONTROL = 3;                // Missing control authority.
+  ES_ERROR_INVALID_USER_INTERACTION_MODE = 4;  // Invalid UIM.
+  ES_ERROR_TIMEOUT = 5;                        // Timeout.
+}
+
+/**
+ * Message containing information about an environment.
+ */
+message Environment {
+  string id = 1;    // Unique identifier of the environment.
+  string name = 2;  // The human readable name of the environment.
+}
+
+/**
+ * The metadata for the environment to be created.
+ */
+message CreateEnvironmentMetadata {
+  string name = 1;  // The human readable name of the environment.
+}
+
+/**
+ * Request message of the CreateEnvironment RPC.
+ */
+message CreateEnvironmentRequest {
+  string anymal_name = 1;                                     // Name of the ANYmal the client wants to create the environment for.
+  CreateEnvironmentMetadata create_environment_metadata = 2;  // The metadata for the environment to be created.
+}
+
+/**
+ * Response message of the CreateEnvironment RPC.
+ */
+message CreateEnvironmentResponse {
+  AnymalServiceResponseHeader header = 1;  // Header with the result status.
+  EnvironmentStatus environment_status =
+      2;                      // (optional) Environment status, only set if the service call status as reported in the header is OK.
+  string environment_id = 3;  // ID of the created environment.
+  string message = 4;         // (optional) Human-readable description of the status.
+}
+
+/**
+ * Request message of the LoadEnvironment RPC.
+ */
+message LoadEnvironmentRequest {
+  string anymal_name = 1;     // Name of the ANYmal the client wants to load the environment for.
+  string environment_id = 2;  // Id of the environment to load.
+}
+
+/**
+ * Response message of the LoadEnvironment RPC.
+ */
+message LoadEnvironmentResponse {
+  AnymalServiceResponseHeader header = 1;  // Header with the result status.
+  EnvironmentStatus environment_status =
+      2;               // (optional) Environment status, only set if the service call status as reported in the header is OK.
+  string message = 3;  // (optional) Human-readable description of the status.
+}
+
+/**
+ * Request message of the ListEnvironments RPC.
+ */
+message ListEnvironmentsRequest {
+  string anymal_name = 1;  // Name of the ANYmal to list the environments of.
+}
+
+/**
+ * Result message of the ListEnvironments RPC.
+ */
+message ListEnvironmentsResponse {
+  AnymalServiceResponseHeader header = 1;  // Header with the result status.
+  EnvironmentStatus environment_status =
+      2;  // (optional) Environment status, only set if the service call status as reported in the header is OK.
+  repeated Environment environments = 3;  // List of available environments.
+  string message = 4;                     // (optional) Human-readable description of the status.
+  sint32 idx_loaded = 5;   // Index of the environment currently loaded. -1 indicates that no environment is currently loaded.
+  sint32 idx_default = 6;  // Index of the default environment. -1 indicates none.
+}
+
+/**
+ * Request message of the SetDefaultEnvironment RPC.
+ */
+message SetDefaultEnvironmentRequest {
+  string anymal_name = 1;     // Name of the ANYmal to set the default environment for.
+  string environment_id = 2;  // ID of the environment to set as default.
+}
+
+/**
+ * Response message of the SetDefaultEnvironment RPC.
+ */
+message SetDefaultEnvironmentResponse {
+  AnymalServiceResponseHeader header = 1;    // Header with the result status.
+  EnvironmentStatus environment_status = 2;  // (optional) Environment status, only set if the service call status is OK.
+  string message = 3;                        // (optional) Human-readable description of the status.
+}
+
+/**
+ * Request message of the DeleteEnvironment RPC.
+ */
+message DeleteEnvironmentRequest {
+  string anymal_name = 1;     // Name of the ANYmal to delete the environment for.
+  string environment_id = 2;  // ID of the environment to delete.
+}
+
+/**
+ * Response message of the DeleteEnvironment RPC.
+ */
+message DeleteEnvironmentResponse {
+  AnymalServiceResponseHeader header = 1;    // Header with the result status.
+  EnvironmentStatus environment_status = 2;  // (optional) Environment status, only set if the service call status is OK.
+  string message = 3;                        // (optional) Human-readable description of the status.
+}

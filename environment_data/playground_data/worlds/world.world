@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+<sdf version="1.4">
+  <world name="default">
+
+    <!-- World -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://playground</uri>
+    </include>
+
+    <!-- Docking stations -->
+    <include>
+      <uri>model://docking_station_1</uri>
+      <pose>-2.0 0.5 0.001 0 0 3.14159</pose>
+    </include>
+
+    <!-- We do not include the dds into docking_station_1. Reason: our rviz_world_loader handles nested models badly. -->
+    <include>
+      <uri>model://docking_debugging_fiducial</uri>
+      <!-- This pose needs to be hand-crafted to match docking_station_1 -->
+      <pose>-2.75 0.5 0.001 0 0 3.14159</pose>
+      <name>dds_docking_station_1</name>
+    </include>
+
+    <include>
+      <uri>model://docking_station_2</uri>
+      <pose>2.4729 -6.5105 0.001 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://docking_station_3</uri>
+      <pose>10.6125 -10.2525 0.001 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://docking_station_4</uri>
+      <pose>-9.2666 0.6848 0.001 0 0 0</pose>
+    </include>
+    <!-- This docking station is close to docking station 4 -->
+    <include>
+      <uri>model://docking_station_5</uri>
+      <pose>-9.2666 0.105 0.001 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://docking_station_6</uri>
+      <pose>-9.9725 -9.3738 0.001 0 0 0</pose>
+    </include>
+
+    <!-- April tags for inspection -->
+    <include>
+      <uri>model://apriltag_0_size_18cm</uri>
+      <pose>7.495 0.0 1.5 0 0 3.14159</pose>
+    </include>
+
+    <!-- Thermal inspection items -->
+    <include>
+      <uri>model://heat_plate_0.15x0.15_e1.0</uri>
+      <pose>7.75 -2.0 1.5 0 0 0</pose>
+      <name>heat_maze_entrance</name>
+    </include>
+    <include>
+      <uri>model://heat_plate_0.9x0.9_e0.5</uri>
+      <pose>-6.0 -9.45 1.5 0 0 0</pose>
+      <name>heat_first_floor_1</name>
+    </include>
+    <include>
+      <uri>model://heat_plate_0.9x0.9_e0.1</uri>
+      <pose>-5.5 -12.0 1.5 0 0 0</pose>
+      <name>heat_first_floor_4</name>
+    </include>
+
+    <!-- Dial inspection items -->
+    <include>
+      <uri>model://pressure_gauge_501</uri>
+      <pose>-6.0 -6.45 0.8 0 0 1.5708</pose>
+      <name>gauge_ground_floor_1</name>
+    </include>
+    <include>
+      <uri>model://pressure_gauge_501</uri>
+      <pose>15.7 10.05 1.6 0 0 1.5708</pose>
+      <name>gauge_maze_exit</name>
+    </include>
+    <include>
+      <uri>model://pressure_gauge_501</uri>
+      <pose>-17.7 -3.9 0.5 0 0 0</pose>
+      <name>gauge_second_floor_2</name>
+    </include>
+
+    <!-- Inspection intelligence items -->
+    <include>
+      <uri>model://round_gauge_1</uri>
+      <pose>-8.52 -6.8 0.8 0 0 3.14159</pose>
+      <name>round_gauge_1_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://pressure_gauge_501</uri>
+      <pose>-8.52 -7.8 1.0 0 0 3.14159</pose>
+      <name>round_gauge_501_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://round_gauge_2</uri>
+      <pose>-8.52 -7.3 0.5 0 0 3.14159</pose>
+      <name>round_gauge_2_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://square_gauge_1</uri>
+      <pose>-8.52 -7.3 0.8 0 0 3.14159</pose>
+      <name>square_gauge_1_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://square_gauge_2</uri>
+      <pose>-8.52 -8.2 0.5 0 0 3.14159</pose>
+      <name>square_gauge_2_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://fire_extinguisher_1</uri>
+      <pose>-8.52 -6.8 0.27 0 0 3.14159</pose>
+      <name>fire_extinguisher_1_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://fire_extinguisher_2</uri>
+      <pose>-8.52 -7.8 0.27 0 0 3.14159</pose>
+      <name>fire_extinguisher_2_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://linear_gauge_1</uri>
+      <pose>-8.52 -7.5 0.9 0 0 3.14159</pose>
+      <name>linear_gauge_1_ground_floor</name>
+    </include>
+    <include>
+      <uri>model://safety_helmet_1</uri>
+      <pose>-8.52 -8.2 1.0 0 0 3.14159</pose>
+      <name>safety_helmet_1_ground_floor</name>
+    </include>
+
+    <plugin name="CustomWorldPlugin" filename="libworld_gazebo_plugin.so" />
+  </world>
+</sdf>

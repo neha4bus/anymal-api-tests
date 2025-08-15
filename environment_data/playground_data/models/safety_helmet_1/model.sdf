@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="safety_helmet_1">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="safety_helmet_1_link">
+      <visual name="safety_helmet_1_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://safety_helmet_1/meshes/safety_helmet_1.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
+ 

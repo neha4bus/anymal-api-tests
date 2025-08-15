@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="heat_plate_0.15x0.15_e1.0">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="heat_plate_0.15x0.15_e1.0_link">
+      <visual name="heat_plate_0.15x0.15_e1.0_visual">
+        <geometry>
+          <box>
+            <size>0.15 0.02 0.15</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 0</specular>
+          <emissive>1 0 0 1</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
+ 
