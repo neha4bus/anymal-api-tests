@@ -86,6 +86,17 @@ tmp/
 *.wav
 *.tiff
 
+# Large binary files
+*.pb
+*.ply
+*.stl
+*.dae
+*.xcf
+
+# Environment data (large files)
+environment_data/playground_data/slam_maps/
+environment_data/playground_data/models/*/meshes/
+
 # Test outputs
 test_output/
 output/
