@@ -1,0 +1,250 @@
+================================================================================
+🔍 ANYmal Data Navigator API Discovery Report
+================================================================================
+Server: https://raas-ge-ver.prod.anybotics.com
+Total endpoints probed: 50
+
+📊 Summary:
+  ✅ Accessible: 5
+  🔐 Requires Auth: 1
+  ❌ Not Found: 23
+
+✅ ACCESSIBLE ENDPOINTS:
+  /data-navigator-api/inspections - 200 (application/json; charset=utf-8)
+    Response: {'totalItems': 373, 'items': [{'eventId': '9c5e7ee0-28d2-47b4-a4da-539776ee7352', 'timestamp': '2025...
+  /data-navigator-api/missions - 200 (application/json; charset=utf-8)
+    Response: {'totalItems': 6, 'items': [{'id': 1, 'name': 'Ad-Hoc Mission', 'lastRunDate': '2025-08-13T11:31:12....
+  /data-navigator-api/robots - 200 (application/json; charset=utf-8)
+    Response: {'totalItems': 4, 'items': [{'id': 1, 'name': 'd100', 'nickname': None, 'relatedRobots': []}, {'id':...
+  /data-navigator-api/assets - 200 (application/json; charset=utf-8)
+    Response: {'totalItems': 12, 'items': [{'id': 3, 'name': 'UNIT_01_THERMAL_1T001', 'breadcrumbs': [{'id': 5, 'n...
+  /authentication-service/auth/logout - 200 ()
+
+🔐 AUTHENTICATION REQUIRED:
+  /authentication-service/auth/refresh - 401 Unauthorized
+
+🗂️  DATA NAVIGATOR ENDPOINTS:
+  /data-navigator-api - 404
+  /data-navigator-api/health - 404
+  /data-navigator-api/version - 404
+  /data-navigator-api/inspections - 200
+  /data-navigator-api/inspections/list - 404
+  /data-navigator-api/inspections/search - 404
+  /data-navigator-api/inspections/raw-data - 404
+  /data-navigator-api/inspections/metadata - 404
+  /data-navigator-api/missions - 200
+  /data-navigator-api/missions/list - 404
+  /data-navigator-api/robots - 200
+  /data-navigator-api/robots/list - 404
+  /data-navigator-api/assets - 200
+  /data-navigator-api/assets/list - 404
+  /data-navigator-api/files - 404
+  /data-navigator-api/files/list - 404
+  /data-navigator-api/files/upload - 404
+  /data-navigator-api/files/download - 404
+
+🤖 ANYMAL API ENDPOINTS:
+  /anymal-api - 404
+  /anymal-api/health - 404
+  /anymal-api/version - 404
+  /anymal-api/liveview - 404
+  /anymal-api/liveview/token - 403
+  /anymal-api/liveview/sources - 403
+  /anymal-api/liveview/tracks - 404
+
+📚 DOCUMENTATION ENDPOINTS:
+  /swagger - 403
+  /swagger-ui - 403
+  /docs - 403
+  /api-docs - 403
+  /openapi.json - 403
+  /swagger.json - 403
+  /.well-known/openapi - 403
+  /redoc - 403
+
+🔍 DETAILED ENDPOINT ANALYSIS:
+
+Endpoint: /data-navigator-api/inspections
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 373,
+  "items": [
+    {
+      "eventId": "9c5e7ee0-28d2-47b4-a4da-539776ee7352",
+      "timestamp": "2025-08-13T11:30:16.996Z",
+      "pointOfInterestId": 24,
+      "measurement": 406.54,
+      "originalMeasurement": 406.54,
+      "outcome": "Anomaly",
+      "originalOutcome": "Ano...
+
+Endpoint: /data-navigator-api/missions
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 6,
+  "items": [
+    {
+      "id": 1,
+      "name": "Ad-Hoc Mission",
+      "lastRunDate": "2025-08-13T11:31:12.402Z",
+      "lastRunOutcome": "Success",
+      "totalInspectionEvents": 39,
+      "environmentId": "hagenholz_data",
+      "estimatedDuration": 0.24
+    },
+    {
+      "i...
+
+Endpoint: /data-navigator-api/robots
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 4,
+  "items": [
+    {
+      "id": 1,
+      "name": "d100",
+      "nickname": null,
+      "relatedRobots": []
+    },
+    {
+      "id": 2,
+      "name": "donkey",
+      "nickname": null,
+      "relatedRobots": []
+    },
+    {
+      "id": 3,
+      "name": "d064",
+      "nickname": nul...
+
+Endpoint: /data-navigator-api/assets
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 12,
+  "items": [
+    {
+      "id": 3,
+      "name": "UNIT_01_THERMAL_1T001",
+      "breadcrumbs": [
+        {
+          "id": 5,
+          "name": "UNIT_01",
+          "isFavorite": false,
+          "externalId": null,
+          "externalDescription": null
+        }
+      ],
+      ...
+
+Endpoint: /authentication-service/auth/logout
+  Status: 200 OK
+  Content-Type: 
+
+Endpoint: /authentication-service/auth/refresh
+  Status: 401 Unauthorized
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Invalid refresh token",
+  "error": "Unauthorized",
+  "statusCode": 401
+}...
+
+Endpoint: /data-navigator-api
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/health
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /health",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/version
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /version",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/inspections
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 373,
+  "items": [
+    {
+      "eventId": "9c5e7ee0-28d2-47b4-a4da-539776ee7352",
+      "timestamp": "2025-08-13T11:30:16.996Z",
+      "pointOfInterestId": 24,
+      "measurement": 406.54,
+      "originalMeasurement": 406.54,
+      "outcome": "Anomaly",
+      "originalOutcome": "Ano...
+
+Endpoint: /data-navigator-api/inspections/list
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /inspections/list",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/inspections/search
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /inspections/search",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/inspections/raw-data
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /inspections/raw-data",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/inspections/metadata
+  Status: 404 Not Found
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "message": "Cannot GET /inspections/metadata",
+  "error": "Not Found",
+  "statusCode": 404
+}...
+
+Endpoint: /data-navigator-api/missions
+  Status: 200 OK
+  Content-Type: application/json; charset=utf-8
+  Response: {
+  "totalItems": 6,
+  "items": [
+    {
+      "id": 1,
+      "name": "Ad-Hoc Mission",
+      "lastRunDate": "2025-08-13T11:31:12.402Z",
+      "lastRunOutcome": "Success",
+      "totalInspectionEvents": 39,
+      "environmentId": "hagenholz_data",
+      "estimatedDuration": 0.24
+    },
+    {
+      "i...

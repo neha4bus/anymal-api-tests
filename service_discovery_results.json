@@ -1,0 +1,260 @@
+{
+  "timestamp": "2025-01-16",
+  "base_url": "https://raas-ge-ver.prod.anybotics.com",
+  "working_endpoints": [
+    {
+      "endpoint": "/authentication-service/auth/refresh",
+      "status": 200,
+      "data_sample": "{'accessToken': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii9jZXJ0cy9qd3Qua2V5LnB1YiJ9.eyJzdWIiOiJ5YXRoaXNoLnZAZ2V2ZXJub3ZhLmNvbSIsInVzZXIiOiJZYXRo...",
+      "content_type": "application/json; charset=utf-8"
+    },
+    {
+      "endpoint": "/data-navigator-api/inspections",
+      "status": 200,
+      "data_sample": "{'totalItems': 373, 'items': [{'eventId': '9c5e7ee0-28d2-47b4-a4da-539776ee7352', 'timestamp': '2025-08-13T11:30:16.996Z', 'pointOfInterestId': 24, 'm...",
+      "content_type": "application/json; charset=utf-8"
+    },
+    {
+      "endpoint": "/data-navigator-api/missions",
+      "status": 200,
+      "data_sample": "{'totalItems': 6, 'items': [{'id': 1, 'name': 'Ad-Hoc Mission', 'lastRunDate': '2025-08-13T11:31:12.402Z', 'lastRunOutcome': 'Success', 'totalInspecti...",
+      "content_type": "application/json; charset=utf-8"
+    },
+    {
+      "endpoint": "/data-navigator-api/robots",
+      "status": 200,
+      "data_sample": "{'totalItems': 4, 'items': [{'id': 1, 'name': 'd100', 'nickname': None, 'relatedRobots': []}, {'id': 2, 'name': 'donkey', 'nickname': None, 'relatedRo...",
+      "content_type": "application/json; charset=utf-8"
+    },
+    {
+      "endpoint": "/data-navigator-api/assets",
+      "status": 200,
+      "data_sample": "{'totalItems': 12, 'items': [{'id': 3, 'name': 'UNIT_01_THERMAL_1T001', 'breadcrumbs': [{'id': 5, 'name': 'UNIT_01', 'isFavorite': False, 'externalId'...",
+      "content_type": "application/json; charset=utf-8"
+    }
+  ],
+  "auth_required_endpoints": [
+    {
+      "endpoint": "/authentication-service/users/me",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/user-service/profile",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/user-service/preferences",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/workforce-service/inspections",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/workforce-service/missions",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/workforce-service/robots",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/workforce-service/dashboard",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/fleet-service/robots",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/fleet-service/status",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/fleet-service/missions",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/analytics-service/inspections",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/analytics-service/reports",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/analytics-service/dashboard",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/reporting-service/generate",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/reporting-service/templates",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/file-service/upload",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/file-service/download",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/media-service/images",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/media-service/videos",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/config-service/settings",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/settings-service/user",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/preferences-service/user",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/notification-service/alerts",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/alert-service/notifications",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/docs",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/swagger",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/openapi",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/docs",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/swagger",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/openapi.json",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api-docs",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/health",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/status",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/ping",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/version",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/info",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/v1/inspections",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/v1/missions",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/v1/robots",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/api/v1/assets",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/v1/inspections",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/v1/missions",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/v1/robots",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    },
+    {
+      "endpoint": "/v1/assets",
+      "status": 403,
+      "note": "Authentication/Authorization required"
+    }
+  ],
+  "total_working": 5,
+  "total_auth_required": 44
+}
